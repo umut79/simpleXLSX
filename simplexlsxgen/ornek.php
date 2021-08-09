@@ -1,5 +1,5 @@
 <?php
-require_once "src/SimpleXLSXGen.php";
+require_once __DIR__."/src/SimpleXLSXGen.php";
 // ornek 1- basic
 $books = [
     ['ISBN', 'title', 'author', 'publisher', 'ctry' ],
@@ -7,7 +7,9 @@ $books = [
     [908606664, 'Slinky Malinki', 'Lynley Dodd', 'Mallinson Rendel', 'NZ']
 ];
 $xlsx = SimpleXLSXGen::fromArray( $books );
-$xlsx->saveAs('books.xlsx'); // or downloadAs('books.xlsx') or $xlsx_content = (string) $xlsx
+# $xlsx->downloadAs('books.xlsx'); // or
+#$xlsx->saveAs('books.xlsx'); // or
+#$xlsx->$xlsx_content = (string) $xlsx
 
 // ornek 2 - data tipleri
 $data = [
@@ -23,7 +25,8 @@ $data = [
     ['Hyperlink + Anchor', '<a href="https://github.com/shuchkin/simplexlsxgen">SimpleXLSXGen</a>'],
     ['RAW string', "\0".'2020-10-04 16:02:00']
 ];
-SimpleXLSXGen::fromArray( $data )->saveAs('datatypes.xlsx');
+$xlsxName = date("Y_m_d_his")."_".rand(0,9999).".xlsx";
+SimpleXLSXGen::fromArray( $data )->downloadAs($xlsxName); //saveAs('datatypes.xlsx');
 
 // ornek 3 - bicimlendirme
 $data = [
@@ -40,9 +43,10 @@ $data = [
     ['Right', '<right>Right Text</right>'],
     ['Center + Bold', '<center><b>Name</b></center>']
 ];
+/*
 SimpleXLSXGen::fromArray( $data )
     ->setDefaultFont( 'Courier New' )
     ->setDefaultFontSize( 14 )
     ->saveAs('styles_and_tags.xlsx');
-
+*/
 ?>

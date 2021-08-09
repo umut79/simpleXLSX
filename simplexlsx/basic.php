@@ -29,8 +29,10 @@ if ( $xlsx = SimpleXLSX::parse($xfile) ) {
 		echo '<tr><td>'.implode('</td><td>', $r ).'</td></tr>';
 	}
 	echo '</table>';
+
+
 	// aralık belirt
-	
+
 	echo "<p><b>Belirli aralıklar: 1->END</b></p>";
 	$newRows = array_slice( $xlsx->rows(), 1, count($xlsx->rows()));
 	echo '<table border="1" cellpadding="3" style="border-collapse: collapse">';
@@ -38,9 +40,9 @@ if ( $xlsx = SimpleXLSX::parse($xfile) ) {
 		echo '<tr><td>'.implode('</td><td>', $r ).'</td></tr>';
 	}
 	echo '</table>';
-	
-	
-	
+
+
+
 } else {
 	echo SimpleXLSX::parseError();
 }
