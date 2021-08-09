@@ -3,14 +3,14 @@
 if(stristr($_SERVER['SERVER_NAME'], "local")) {
     // Localhost ayarları
   error_reporting(E_ALL & ~E_NOTICE);
-  @define("DBhost", "localhost");
+	@define("DBhost", "localhost");
 	@define("DBuser", "root");
 	@define("DBpass", "4200");
 	@define("DBname", "a0okulu");
     //define("dev", 1);
 } else {
   error_reporting(0);
-  @define("DBhost", "localhost");
+	@define("DBhost", "localhost");
 	@define("DBuser", "fg163_u411z1Z4wa");
 	@define("DBpass", "4NKv9Q9x");
 	@define("DBname", "fg163u411z1z419u5");
@@ -36,9 +36,9 @@ function getSql($sql) {
 				$ret['err'] = false;
 				$ret['msg'] = "Sorgu başarılı. ". $rc ." kayıt bulundu.";
 			} else {
-					$ret['data'] = $stm->fetchAll(PDO::FETCH_ASSOC);
-					$ret['err'] = false;
-					$ret['msg'] = "Sorgu başarılı. ". $rc. " kayıt bulundu.";
+				$ret['data'] = $stm->fetchAll(PDO::FETCH_ASSOC);
+				$ret['err'] = false;
+				$ret['msg'] = "Sorgu başarılı. ". $rc. " kayıt bulundu.";
 			}
 	} catch (PDOException $e) {
 		$ret['err'] = 1;
@@ -52,7 +52,7 @@ function getSql($sql) {
 <html>
 <head>
 <meta charset="utf-8">
-<title>...</title>
+<title>XLSXgen</title>
 </head>
 <body>
 <form enctype="multipart/form-data" method="post">
