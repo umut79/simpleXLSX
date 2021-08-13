@@ -27,6 +27,7 @@ if(isset($_FILES["file"])){
 </form>
 
 <?php
+$table = "db_tablo";
 if($xfile) {
   // echo SimpleXLSX::parse($xfile)->toHTML();
 	
@@ -47,13 +48,20 @@ if($xfile) {
 		echo "<h3>SQLizer</h3>";
 		$sql = "";
 		foreach($rows as $r) {
-			$sql .= "insert into Table ";
+			#$sql .= "insert into Table ";
 			$stn = $dat = array();
 			foreach($r as $rk => $rv) {
 				$stn[]= "`".$rk."`";
 				$dat[]= ($rv) ? "'".$rv."'" : "NULL";
 			}
-			$sql.= "(". implode(",", $stn) .") VALUES (". implode(",", $dat) .");<br>\n";
+			#$sql.= "(". implode(",", $stn) .") VALUES (". implode(",", $dat) .");<br>\n";
+			
+			$values = $r;
+			$sql .= 'INSERT INTO ' . trim($table) . ' ('
+					. implode(', ', array_keys($values)) . ') VALUES ('
+					. implode(', ', preg_replace('/^([A-Za-z0-9_-]+)$/', ':${1}', array_keys($values)))
+					. ')';
+			
 		}
 		
 		echo "<pre style='max-height:200px; overflow:auto; border: 1px solid #666; padding:3px'>";
