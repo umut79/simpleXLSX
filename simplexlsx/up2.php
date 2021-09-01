@@ -60,11 +60,11 @@ if($xfile) {
 			$sql .= 'INSERT INTO ' . trim($table) . ' ('
 					. implode(', ', array_keys($values)) . ') VALUES ('
 					. implode(', ', preg_replace('/^([A-Za-z0-9_-]+)$/', ':${1}', array_keys($values)))
-					. ')';
+					. ') \n';
 			
 		}
 		
-		echo "<pre style='max-height:200px; overflow:auto; border: 1px solid #666; padding:3px'>";
+		echo "<pre style='max-height:300px; overflow:auto; border: 1px solid #666; padding:3px'>";
 		print_r( $sql );
 		echo "</pre>";
 	}
