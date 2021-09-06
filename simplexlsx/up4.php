@@ -44,14 +44,134 @@ function insert($db, $table, $data){
 		$bug = $sql;
 		$query = $db->prepare($sql);
 		foreach($data as $key=>$val){
-			 $query->bindValue(':'.$key, $val);
-			 $bug .= 'db->bindValue(:'.$key.', '.$val.')';
+			//			
+			$val2date = find_date($val);
+			$val = ($val2date) ? $val2date['y']."-".$val2date['m']."-".$val2date['d'] : $val;
+			
+			if (is_int($val)) {
+				$datatype = PDO::PARAM_INT;
+			} elseif (is_bool($val)) {
+				$datatype = PDO::PARAM_BOOL;
+			} elseif (is_null($val)) {
+				$datatype = PDO::PARAM_NULL;
+			} elseif ($val instanceof DateTime) {
+				$val = $val->format('Y-m-d H:i:s');
+				$datatype = PDO::PARAM_STR;
+			} else {
+				$datatype = PDO::PARAM_STR;
+			}
+			// --
+			 $query->bindValue(':'.$key, $val, $datatype);
+			 $bug .= 'db->bindValue(:'.$key.', '.$val.', $datatype)';
 		}
 		$insert = $query->execute();
 		return $insert?$db->lastInsertId():false;
 	}else{
 		return false;
 	}
+}
+
+
+// insert v.3 ????????????????????
+function insert3($pdo, $table, $cols, $data) {
+	$pdo->beginTransaction(); // Speed up your inserts	
+		$columns = '';
+		$values  = '';
+		$i = 0;
+
+		$columnString = implode(',', array_keys($data));
+		$valueString = ":".implode(',:', array_keys($data));
+		$sql = "INSERT INTO ".$table." (".$columnString.") VALUES (".$valueString.")";
+		$bug = $sql;
+		$query = $pdo->prepare($sql);
+		foreach($data as $key=>$val){
+			//			
+			$val2date = find_date($val);
+			$val = ($val2date) ? $val2date['y']."-".$val2date['m']."-".$val2date['d'] : $val;			
+			if (is_int($val)) {
+				$datatype = PDO::PARAM_INT;
+			} elseif (is_bool($val)) {
+				$datatype = PDO::PARAM_BOOL;
+			} elseif (is_null($val)) {
+				$datatype = PDO::PARAM_NULL;
+			} elseif ($val instanceof DateTime) {
+				$val = $val->format('Y-m-d H:i:s');
+				$datatype = PDO::PARAM_STR;
+			} else {
+				$datatype = PDO::PARAM_STR;
+			}
+			// --
+			$query->bindValue(':'.$key, $val, $datatype);
+			$bug .= 'db->bindValue(:'.$key.', '.$val.', $datatype)';
+		}
+		
+		try {
+			$insert = $query->execute();
+			// $src = $insert?$query->lastInsertId():false;
+			// $src = $insert->rowCount(); //
+			return ($insert) ? true : false;
+		} catch(PDOException $e) {
+			return $e->getMessage();
+		}
+		$pdo->commit();
+}
+
+
+
+
+function insert2($pdo, $table, $cols, $data) {
+	$pdo->beginTransaction(); // Speed up your inserts
+	$insertvalues = array();
+	
+	foreach ($data as $d) {
+		$questionmarks[] = '(' . placeholder( '?', sizeof($d)) . ')';
+		$insertvalues = array_merge( $insertvalues, array_values($d) );
+	}
+	$sql = "INSERT INTO ". $table ." (" . implode( ',', array_values( $cols ) ) . ") VALUES " . implode( ',', $questionmarks);
+	// echo "<code> $sql </code><br>";
+	$statement = $pdo->prepare($sql);
+	try {
+		$statement->execute($insertvalues);
+		$src = $statement->rowCount(); //
+		return ($statement) ? $src : false;
+	} catch(PDOException $e) {
+		return $e->getMessage();
+	}
+	$pdo->commit();
+}
+
+
+
+
+function find_date( $string ) {
+	$day = ""; $month = ""; $year = "";
+	// \d{4}[\.\-\/]+\d{1,2}[\.\-\/]+\d{1,2} ==> yyyy-mm-dd
+	// Match dates: 01/01/2012 or 30-12-11 or 1 2 1985
+	preg_match( '/([0-9]?[0-9])[\.\-\/ ]+([0-1]?[0-9])[\.\-\/ ]+([0-9]{2,4})/', $string, $matches );
+	if ( $matches ) {
+		if ( $matches[1] ) $day = $matches[1];
+		if ( $matches[2] ) $month = $matches[2];
+		if ( $matches[3] ) $year = $matches[3];
+	}
+	// Day leading 0
+	if ( 1 == strlen( $day ) )
+	$day = '0' . $day;
+	// Month leading 0
+	if ( 1 == strlen( $month ) )
+	$month = '0' . $month;
+	// Check year:
+	if(strlen($year) < 4) $year = false;
+
+	$date = array(
+		'y'  => $year,
+		'm' => $month,
+		'd'   => $day
+	);
+  
+	if ( empty( $year ) && empty( $month ) && empty( $day ) )
+		return false;
+	else
+		return $date;
 }
 ?>
 <!DOCTYPE HTML>
@@ -70,36 +190,54 @@ function insert($db, $table, $data){
 
 if($xfile) {
 
-if ( $xlsx = SimpleXLSX::parse($xfile)) {
-	// Produce array keys from the array values of 1st array element
-	$header_values = $rows = [];
-	foreach ( $xlsx->rows() as $k => $r ) {
-		if ( $k === 0 ) {
-			$header_values = $r;
-			continue;
+	$msc = microtime(true);
+
+	if ( $xlsx = SimpleXLSX::parse($xfile)) {
+		// Produce array keys from the array values of 1st array element
+		$header_values = $rows = [];
+		foreach ( $xlsx->rows() as $k => $r ) {
+			if ( $k === 0 ) {
+				$header_values = $r;
+				continue;
+			}
+			$rows[] = array_combine( $header_values, $r );
 		}
-		$rows[] = array_combine( $header_values, $r );
+
+		echo "<hr><pre>Code:<br>";
+		// var_dump($rows);
+		echo "</pre>";
+		
+		// tablo 
+		$showTbl = '<table border="1" cellpadding="3" style="border-collapse: collapse;">';
+		$showTbl .= '<tr style="background-color: #efefef;"><th>#</th><th>'. implode('</th><th>', array_values($header_values) ) .'</th></tr>';
+		$rowc = 0;
+		// insert 
+		# $dbi = insert2($dbconn, $dbtable, $header_values, $rows);
+		
+		foreach ($rows as $row) {
+			// $ins = insert($dbconn, $dbtable, $row);
+			$ins = insert3($dbconn, $dbtable, $header_values, $row);
+			$rid = $ins ? $ins : "x";
+			$rowc = $ins ? $rowc+1 : $rowc;
+			$showTbl .= '<tr><td>'. $rid .'</td><td>'. implode('</td><td>', $row ) .'</td></tr>';
+		}
+		$showTbl .= "</table><br>Okunan: " . $rowc . " satır.";	
+		
+		
+		if($dbi) {
+			echo $showTbl;
+			echo "Yazılan: ". $dbi ." satır.";
+		}
 	}
 
-	echo "<hr><pre>Code:<br>";
-	// var_dump($rows);
-	echo "</pre>";
-	
-	// tablo 
-	$showTbl = '<table border="1" cellpadding="3" style="border-collapse: collapse;">';
-	$showTbl .= '<tr style="background-color: #efefef;"><th>#</th><th>'. implode('</th><th>', array_values($header_values) ) .'</th></tr>';
-	$rowc = 0;
-	foreach ($rows as $row) {
-		$ins = insert($dbconn, $dbtable, $row);
-		$rid = $ins ? $ins : "x";
-		$rowc = $ins ? $rowc+1 : $rowc;
-		$showTbl .= '<tr><td>'. $rid .'</td><td>'. implode('</td><td>', $row ) .'</td></tr>';
-	}
-	
-	$showTbl .= "</table><br>" . $rowc . " satır eklendi";	
-	
-	echo $showTbl;
+
+	$msc = microtime(true)-$msc;
+	echo "Sorgu süresi: ". $msc . " s / "; // in seconds
+	echo "Sorgu süresi: ". ($msc * 1000) . " ms"; // in millseconds
+
 }
+
+
 
 // HTML TABLE GOSTER ------------------------------------------------------------------
 /* ************************************************************************************
@@ -114,7 +252,7 @@ if ( $xlsx = SimpleXLSX::parse($xfile) ) {
 }
 ************************************************************************************** */
 
-}
+
 ?>
 
 <?php
