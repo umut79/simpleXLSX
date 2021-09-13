@@ -212,11 +212,11 @@ if($xfile) {
 		$showTbl .= '<tr style="background-color: #efefef;"><th>#</th><th>'. implode('</th><th>', array_values($header_values) ) .'</th></tr>';
 		$rowc = 0;
 		// insert 
-		# $dbi = insert2($dbconn, $dbtable, $header_values, $rows);
+		$dbi = insert2($dbconn, $dbtable, $header_values, $rows);
 		
 		foreach ($rows as $row) {
 			// $ins = insert($dbconn, $dbtable, $row);
-			$ins = insert3($dbconn, $dbtable, $header_values, $row);
+			// $ins = insert3($dbconn, $dbtable, $header_values, $row);
 			$rid = $ins ? $ins : "x";
 			$rowc = $ins ? $rowc+1 : $rowc;
 			$showTbl .= '<tr><td>'. $rid .'</td><td>'. implode('</td><td>', $row ) .'</td></tr>';
