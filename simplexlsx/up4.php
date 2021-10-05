@@ -129,6 +129,7 @@ function insert2($pdo, $table, $cols, $data) {
 	}
 	$sql = "INSERT INTO ". $table ." (" . implode( ',', array_values( $cols ) ) . ") VALUES " . implode( ',', $questionmarks);
 	// echo "<code> $sql </code><br>";
+	var_dump($insertvalues);
 	$statement = $pdo->prepare($sql);
 	try {
 		$statement->execute($insertvalues);
@@ -247,15 +248,16 @@ if($xfile) {
 		$rowc = 0;
 		// insert 
 		$dbi = insert2($dbconn, $dbtable, $header_values, $rows);
-		
+		$rowsCount = count($rows);
 		foreach ($rows as $row) {
 			// $ins = insert($dbconn, $dbtable, $row);
 			// $ins = insert3($dbconn, $dbtable, $header_values, $row);
-			$rid = $ins ? $ins : "x";
-			$rowc = $ins ? $rowc+1 : $rowc;
-			$showTbl .= '<tr><td>'. $rid .'</td><td>'. implode('</td><td>', $row ) .'</td></tr>';
+			# $rid = $ins ? $ins : "x";
+			# $rowc = $ins ? $rowc+1 : $rowc;
+			$rowc++;
+			$showTbl .= '<tr><td>'. $rowc .'</td><td>'. implode('</td><td>', $row ) .'</td></tr>';
 		}
-		$showTbl .= "</table><br>Okunan: " . $rowc . " satır.";	
+		$showTbl .= "</table><br>Okunan: " . $rowsCount . " satır.";	
 		
 		
 		if($dbi) {
@@ -266,8 +268,7 @@ if($xfile) {
 
 
 	$msc = microtime(true)-$msc;
-	echo "Sorgu süresi: ". $msc . " s / "; // in seconds
-	echo "Sorgu süresi: ". ($msc * 1000) . " ms"; // in millseconds
+	echo "<hr>Sorgu süresi: ". $msc . " s / ". ($msc * 1000) . " ms"; // in millseconds
 
 }
 
