@@ -188,6 +188,40 @@ function find_date( $string ) {
 
 <?php
 
+/*
+
+CREATE TABLE `dokum` (
+	`id` INT(11) NOT NULL AUTO_INCREMENT,
+	`dok_turu` VARCHAR(20) NULL DEFAULT NULL COLLATE 'utf8_turkish_ci',
+	`dok_krm_tur_kodu` VARCHAR(10) NULL DEFAULT NULL COLLATE 'utf8_turkish_ci',
+	`dok_alan_id` SMALLINT(6) NULL DEFAULT NULL,
+	`dok_sinif_kodu` VARCHAR(10) NULL DEFAULT NULL COLLATE 'utf8_turkish_ci',
+	`dok_adi` VARCHAR(250) NOT NULL DEFAULT '\'İsimsiz Belge\'' COLLATE 'utf8_turkish_ci',
+	`dok_dosya` VARCHAR(500) NOT NULL COLLATE 'utf8_turkish_ci',
+	`dok_img` VARCHAR(300) NULL DEFAULT '\'images/icon/dok-default.png\'' COLLATE 'utf8_turkish_ci',
+	`dok_kodu` VARCHAR(100) NULL DEFAULT NULL COLLATE 'utf8_turkish_ci',
+	`dok_sayi` VARCHAR(20) NULL DEFAULT NULL COLLATE 'utf8_turkish_ci',
+	`dok_tarih` DATE NULL DEFAULT NULL,
+	`dok_onaysayi` VARCHAR(30) NULL DEFAULT NULL COLLATE 'utf8_turkish_ci',
+	`dok_onaytarih` DATE NULL DEFAULT NULL,
+	`dok_alan` VARCHAR(200) NULL DEFAULT NULL COLLATE 'utf8_turkish_ci',
+	`yolx` VARCHAR(500) NULL DEFAULT NULL COLLATE 'utf8_turkish_ci',
+	`indirme` MEDIUMINT(9) NULL DEFAULT NULL,
+	`durum` VARCHAR(1) NOT NULL DEFAULT 'y' COLLATE 'utf8_turkish_ci',
+	`kayit` DATETIME NULL DEFAULT current_timestamp(),
+	`guncelleme` DATETIME NULL DEFAULT NULL,
+	`notlar` TEXT NULL DEFAULT NULL COLLATE 'utf8_turkish_ci',
+	PRIMARY KEY (`id`) USING BTREE,
+	INDEX `dok_alan_id` (`dok_alan_id`) USING BTREE,
+	INDEX `dok_krm_tur_kodu` (`dok_krm_tur_kodu`) USING BTREE,
+	INDEX `dok_sinif_kodu` (`dok_sinif_kodu`) USING BTREE,
+	INDEX `dok_turu` (`dok_turu`) USING BTREE
+)
+COLLATE='utf8_turkish_ci'
+ENGINE=InnoDB
+;
+
+*/
 if($xfile) {
 
 	$msc = microtime(true);
