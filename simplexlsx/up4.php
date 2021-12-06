@@ -9,7 +9,7 @@ $dbname = "simple_xlsx";
 $dbuser = "root";
 $dbpass = "4200";
 $dbconn = new PDO("mysql:host=$dbhost;dbname=$dbname;charset=utf8",$dbuser,$dbpass);
-$dbtable = "dokum";
+$dbtable = "ed22_list_dntm";
 
 if(isset($_FILES["file"])){
     if ($_FILES["file"]["error"] > 0){
@@ -20,129 +20,6 @@ if(isset($_FILES["file"])){
         $xfile = $_FILES["file"]["tmp_name"];
     }
 }
-
-function placeholder( $text, $count = 0, $separator = ',' ) {
-	$result = array();
-
-	if ($count > 0) {
-		for ($x = 0; $x < $count; $x++) {
-			$result[] = $text;
-		}
-	}
-	return implode( $separator, $result );
-}
-
-function insert($db, $table, $data){
-	if(!empty($data) && is_array($data)){
-		$columns = '';
-		$values  = '';
-		$i = 0;
-
-		$columnString = implode(',', array_keys($data));
-		$valueString = ":".implode(',:', array_keys($data));
-		$sql = "INSERT INTO ".$table." (".$columnString.") VALUES (".$valueString.")";
-		$bug = $sql;
-		$query = $db->prepare($sql);
-		foreach($data as $key=>$val){
-			//			
-			$val2date = find_date($val);
-			$val = ($val2date) ? $val2date['y']."-".$val2date['m']."-".$val2date['d'] : $val;
-			
-			if (is_int($val)) {
-				$datatype = PDO::PARAM_INT;
-			} elseif (is_bool($val)) {
-				$datatype = PDO::PARAM_BOOL;
-			} elseif (is_null($val)) {
-				$datatype = PDO::PARAM_NULL;
-			} elseif ($val instanceof DateTime) {
-				$val = $val->format('Y-m-d H:i:s');
-				$datatype = PDO::PARAM_STR;
-			} else {
-				$datatype = PDO::PARAM_STR;
-			}
-			// --
-			 $query->bindValue(':'.$key, $val, $datatype);
-			 $bug .= 'db->bindValue(:'.$key.', '.$val.', $datatype)';
-		}
-		$insert = $query->execute();
-		return $insert?$db->lastInsertId():false;
-	}else{
-		return false;
-	}
-}
-
-
-// insert v.3 ????????????????????
-function insert3($pdo, $table, $cols, $data) {
-	$pdo->beginTransaction(); // Speed up your inserts	
-		$columns = '';
-		$values  = '';
-		$i = 0;
-
-		$columnString = implode(',', array_keys($data));
-		$valueString = ":".implode(',:', array_keys($data));
-		$sql = "INSERT INTO ".$table." (".$columnString.") VALUES (".$valueString.")";
-		$bug = $sql;
-		$query = $pdo->prepare($sql);
-		foreach($data as $key=>$val){
-			//			
-			$val2date = find_date($val);
-			$val = ($val2date) ? $val2date['y']."-".$val2date['m']."-".$val2date['d'] : $val;			
-			if (is_int($val)) {
-				$datatype = PDO::PARAM_INT;
-			} elseif (is_bool($val)) {
-				$datatype = PDO::PARAM_BOOL;
-			} elseif (is_null($val)) {
-				$datatype = PDO::PARAM_NULL;
-			} elseif ($val instanceof DateTime) {
-				$val = $val->format('Y-m-d H:i:s');
-				$datatype = PDO::PARAM_STR;
-			} else {
-				$datatype = PDO::PARAM_STR;
-			}
-			// --
-			$query->bindValue(':'.$key, $val, $datatype);
-			$bug .= 'db->bindValue(:'.$key.', '.$val.', $datatype)';
-		}
-		
-		try {
-			$insert = $query->execute();
-			// $src = $insert?$query->lastInsertId():false;
-			// $src = $insert->rowCount(); //
-			return ($insert) ? true : false;
-		} catch(PDOException $e) {
-			return $e->getMessage();
-		}
-		$pdo->commit();
-}
-
-
-
-
-function insert2($pdo, $table, $cols, $data) {
-	$pdo->beginTransaction(); // Speed up your inserts
-	$insertvalues = array();
-	
-	foreach ($data as $d) {
-		$questionmarks[] = '(' . placeholder( '?', sizeof($d)) . ')';
-		$insertvalues = array_merge( $insertvalues, array_values($d) );
-	}
-	$sql = "INSERT INTO ". $table ." (" . implode( ',', array_values( $cols ) ) . ") VALUES " . implode( ',', $questionmarks);
-	// echo "<code> $sql </code><br>";
-	var_dump($insertvalues);
-	$statement = $pdo->prepare($sql);
-	try {
-		$statement->execute($insertvalues);
-		$src = $statement->rowCount(); //
-		return ($statement) ? $src : false;
-	} catch(PDOException $e) {
-		return $e->getMessage();
-	}
-	$pdo->commit();
-}
-
-
-
 
 function find_date( $string ) {
 	$day = ""; $month = ""; $year = "";
@@ -174,6 +51,151 @@ function find_date( $string ) {
 	else
 		return $date;
 }
+
+function placeholder( $text, $count = 0, $separator = ',' ) {
+	$result = array();
+	if ($count > 0) {
+		for ($x = 0; $x < $count; $x++) {
+			$result[] = $text;
+		}
+	}
+	return implode( $separator, $result );
+}
+
+function insert($db, $table, $data){
+	$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+	if(!empty($data) && is_array($data)){
+		$columns = '';
+		$values  = '';
+		$i = 0;
+
+		$columnString = implode(',', array_keys($data));
+		$valueString = ":".implode(',:', array_keys($data));
+		$sql = "INSERT INTO ".$table." (".$columnString.") VALUES (".$valueString.")";
+		$bug = $sql;
+		$query = $db->prepare($sql);
+		foreach($data as $key=>$val){
+			/*			
+			$val2date = find_date($val);
+			$val = ($val2date) ? $val2date['y']."-".$val2date['m']."-".$val2date['d'] : $val;
+			*/
+			if (is_int($val)) {
+				$datatype = PDO::PARAM_INT;
+			} elseif (is_bool($val)) {
+				$datatype = PDO::PARAM_BOOL;
+			} elseif (is_null($val)) {
+				$datatype = PDO::PARAM_NULL;
+			} elseif ($val instanceof DateTime) {
+				$val = $val->format('Y-m-d H:i:s');
+				$datatype = PDO::PARAM_STR;
+			} else {
+				$datatype = PDO::PARAM_STR;
+			}
+			// --
+			 $query->bindValue(':'.$key, $val, $datatype);
+			 $bug .= ' db->bindValue(:'.$key.', '.$val.', '.$datatype.')';
+		}
+		// exec
+		try {
+			$query->execute();
+			return $query?$query->rowCount(): false;
+		// return $bug;
+		} catch(PDOException $e) {
+			return $e->getMessage() . " ## Q: ". $bug;
+		}
+	}else{
+		return false;
+	}
+}
+
+
+// insert v.3 ????????????????????
+function insert3($pdo, $table, $cols, $data) {
+	// print_r($data);
+	$pdo->beginTransaction(); // Speed up your inserts	
+		
+		foreach($data as $d){
+			$columns = '';
+			$values  = '';
+			$i = 0;
+			
+			$columnString = implode(', ', array_keys($d));
+			$valueString = ":".implode(', :', array_keys($d));
+			
+			$sql = "INSERT INTO ".$table." (".$columnString.") VALUES (".$valueString.")";
+				$query = $pdo->prepare($sql);
+				echo $sql."<br>";
+			
+		}
+			foreach($d as $key=>$val) {
+				
+				echo ":".$key."->". $val ." / ";
+				
+				if (is_int($val)) {
+					$datatype = PDO::PARAM_INT;
+				} elseif (is_bool($val)) {
+					$datatype = PDO::PARAM_BOOL;
+				} elseif (is_null($val)) {
+					//$val = 0;
+					$datatype = PDO::PARAM_NULL;
+				} elseif (!$val) {
+					//$val = 0;
+					$datatype = PDO::PARAM_NULL;
+				} elseif ($val instanceof DateTime) {
+					$val = $val->format('Y-m-d H:i:s');
+					$datatype = PDO::PARAM_STR;
+				} else {
+					$val = filter_var($val, FILTER_SANITIZE_STRING);
+					$datatype = PDO::PARAM_STR;
+				}
+				// --
+				$query->bindValue(":".$key, $val, $datatype);
+				echo '<b> query->bindValue(:'.$key.', '.$val.', '.$datatype.') </b><br>';
+			}
+	
+		
+		try {
+			$query->execute();
+			// $src = $insert?$query->lastInsertId():false;
+			// $src = $insert->rowCount(); //
+			return ($query) ? true : false;
+		} catch(PDOException $e) {
+			return $e->getMessage();
+		}
+		
+		
+	$pdo->commit();
+}
+
+
+
+
+function insert2($pdo, $table, $cols, $data) {
+	$pdo->beginTransaction(); // Speed up your inserts
+	$insertvalues = array();
+	
+	foreach ($data as $d) {
+		$questionmarks[] = '(' . placeholder( '?', sizeof($d)) . ')';
+		$insertvalues = array_merge( $insertvalues, array_values($d) );
+	}
+	$sql = "INSERT INTO ". $table ." (" . implode( ',', array_values( $cols ) ) . ") VALUES " . implode( ',', $questionmarks);
+	// echo "<code> $sql </code><br>";
+	var_dump($insertvalues);
+	$statement = $pdo->prepare($sql);
+	try {
+		$statement->execute($insertvalues);
+		$src = $statement->rowCount(); //
+		return ($statement) ? $src : false;
+	} catch(PDOException $e) {
+		return $e->getMessage();
+	}
+	$pdo->commit();
+}
+
+
+
+
+
 ?>
 <!DOCTYPE HTML>
 <html>
@@ -247,22 +269,24 @@ if($xfile) {
 		$showTbl .= '<tr style="background-color: #efefef;"><th>#</th><th>'. implode('</th><th>', array_values($header_values) ) .'</th></tr>';
 		$rowc = 0;
 		// insert 
-		$dbi = insert2($dbconn, $dbtable, $header_values, $rows);
-		$rowsCount = count($rows);
+		# $dbi = insert2($dbconn, $dbtable, $header_values, $rows);
+		$ins = insert2($dbconn, $dbtable, $header_values, $rows);
+		
+		$rowsCount = count($rows); // satir say
 		foreach ($rows as $row) {
-			// $ins = insert($dbconn, $dbtable, $row);
-			// $ins = insert3($dbconn, $dbtable, $header_values, $row);
-			# $rid = $ins ? $ins : "x";
-			# $rowc = $ins ? $rowc+1 : $rowc;
-			$rowc++;
-			$showTbl .= '<tr><td>'. $rowc .'</td><td>'. implode('</td><td>', $row ) .'</td></tr>';
+			//++ $ins = insert($dbconn, $dbtable, $row);
+			//--$ins = insert3($dbconn, $dbtable, $header_values, $row);
+			#$rid = $ins ? $ins : "x";
+			#$rowc = $ins ? $rowc+1 : $rowc;
+			//$rowc++;
+			$showTbl .= '<tr><td>'. $rowc .' / Q: '. $ins .'</td><td>'. implode('</td><td>', $row ) .'</td></tr>';
 		}
 		$showTbl .= "</table><br>Okunan: " . $rowsCount . " satır.";	
 		
 		
-		if($dbi) {
+		if($rowc) {
 			echo $showTbl;
-			echo "Yazılan: ". $dbi ." satır.";
+			echo "Yazılan: ". $rowc ." satır.";
 		}
 	}
 
