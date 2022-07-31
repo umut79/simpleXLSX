@@ -9,7 +9,7 @@ $dbname = "simple_xlsx";
 $dbuser = "root";
 $dbpass = "4200";
 $dbconn = new PDO("mysql:host=$dbhost;dbname=$dbname;charset=utf8",$dbuser,$dbpass);
-$dbtable = "ed22_list_dntm";
+$dbtable = "dokum";
 
 if(isset($_FILES["file"])){
     if ($_FILES["file"]["error"] > 0){
@@ -62,46 +62,89 @@ function placeholder( $text, $count = 0, $separator = ',' ) {
 	return implode( $separator, $result );
 }
 
-function insert($db, $table, $data){
-	$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+/*
+$prep = array();
+foreach($insData as $k => $v ) {
+    $prep[':'.$k] = $v;
+}
+$sth = $db->prepare("INSERT INTO table ( " . implode(', ',array_keys($insData)) . ") VALUES (" . implode(', ',array_keys($prep)) . ")");
+$res = $sth->execute($prep);
+*/
+
+function escape_mysql_identifier($field){
+    return "`".str_replace("`", "``", $field)."`";
+}
+
+function pdo_insert($pdo, $table, $data) {
+	$keys = array_keys($data);
+    $keys = array_map('escape_mysql_identifier', $keys);
+    $fields = implode(",", $keys);
+    $table = escape_mysql_identifier($table);
+    $placeholders = str_repeat('?,', count($keys) - 1) . '?';
+    $sql = "INSERT INTO $table ($fields) VALUES ($placeholders)";
+    $pdo->prepare($sql)->execute(array_values($data));
+	echo $sql; // $pdo->rowCount();
+}
+
+
+/**
+* 
+* @param $db
+* @param $table
+* @param $rows
+* @param $data
+* 
+* @return
+*/
+
+function inserts($pdo, $table, $rows, $data){
+	$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 	if(!empty($data) && is_array($data)){
 		$columns = '';
 		$values  = '';
 		$i = 0;
 
-		$columnString = implode(',', array_keys($data));
-		$valueString = ":".implode(',:', array_keys($data));
-		$sql = "INSERT INTO ".$table." (".$columnString.") VALUES (".$valueString.")";
+		$columnString = implode(', ', array_values($rows));
+		$valueString = ":".implode(',:', array_values($rows));
+
+		$sql = "INSERT INTO ".$table." (".$columnString.") VALUES (" . $valueString .")";
 		$bug = $sql;
-		$query = $db->prepare($sql);
-		foreach($data as $key=>$val){
-			/*			
-			$val2date = find_date($val);
-			$val = ($val2date) ? $val2date['y']."-".$val2date['m']."-".$val2date['d'] : $val;
-			*/
-			if (is_int($val)) {
-				$datatype = PDO::PARAM_INT;
-			} elseif (is_bool($val)) {
-				$datatype = PDO::PARAM_BOOL;
-			} elseif (is_null($val)) {
-				$datatype = PDO::PARAM_NULL;
-			} elseif ($val instanceof DateTime) {
-				$val = $val->format('Y-m-d H:i:s');
-				$datatype = PDO::PARAM_STR;
-			} else {
-				$datatype = PDO::PARAM_STR;
-			}
-			// --
-			 $query->bindValue(':'.$key, $val, $datatype);
-			 $bug .= ' db->bindValue(:'.$key.', '.$val.', '.$datatype.')';
-		}
+		$stmt = $pdo->prepare($sql);
+		
 		// exec
 		try {
-			$query->execute();
-			return $query?$query->rowCount(): false;
-		// return $bug;
+			  
+			  $rc=0;
+			  foreach($data as $d){
+					foreach($d as $key => $val) {
+						if (is_int($val)) {
+							$datatype = "PDO::PARAM_INT";
+						} elseif (is_bool($val)) {
+							$datatype = "PDO::PARAM_BOOL";
+						} elseif (is_null($val)) {
+							$datatype = "PDO::PARAM_NULL";
+						} elseif ($val instanceof DateTime) {
+							$val = $val->format('Y-m-d H:i:s');
+							$datatype = "PDO::PARAM_STR";
+						} else {
+							$datatype = "PDO::PARAM_STR";
+						}
+						echo $key."=".$val." -> dt:".$datatype."<br>";
+						// --
+						$stmt->bindValue(':'.$key, $val, $datatype);
+						$bug .= '<br> db->bindValue(:'.$key.', '.$val.', '.$datatype.')';
+						$pdo->execute();
+						$rc += $pdo?$pdo->rowCount(): $rc;
+					}
+				}
+			$pdo->commit();
+			echo $rc;
+			return $rc;
+			// return $bug;
 		} catch(PDOException $e) {
-			return $e->getMessage() . " ## Q: ". $bug;
+			$pdo->rollback();
+			throw $e;
+			return $e->getMessage() . "<hr>## Q: ". $bug;
 		}
 	}else{
 		return false;
@@ -170,20 +213,23 @@ function insert3($pdo, $table, $cols, $data) {
 
 
 
-function insert2($pdo, $table, $cols, $data) {
+function insert2_0($pdo, $table, $cols, $data) {
 	$pdo->beginTransaction(); // Speed up your inserts
 	$insertvalues = array();
-	
+	$questionmarks[] = '(' . placeholder( '?', sizeof($cols)) . ')';
 	foreach ($data as $d) {
-		$questionmarks[] = '(' . placeholder( '?', sizeof($d)) . ')';
+		
 		$insertvalues = array_merge( $insertvalues, array_values($d) );
 	}
 	$sql = "INSERT INTO ". $table ." (" . implode( ',', array_values( $cols ) ) . ") VALUES " . implode( ',', $questionmarks);
-	// echo "<code> $sql </code><br>";
-	var_dump($insertvalues);
+  ## $sql = "INSERT INTO ". $table ." (" . implode( ',', array_values( $cols ) ) . ") VALUES " . array_values( $data ) .";";
+	echo "<pre>";
+   echo $sql;
+	 var_dump($insertvalues);
+  echo "</pre>";
 	$statement = $pdo->prepare($sql);
 	try {
-		$statement->execute($insertvalues);
+		$statement->execute($data);
 		$src = $statement->rowCount(); //
 		return ($statement) ? $src : false;
 	} catch(PDOException $e) {
@@ -192,6 +238,35 @@ function insert2($pdo, $table, $cols, $data) {
 	$pdo->commit();
 }
 
+function insert2($pdo, $table, $cols, $data) {
+	$pdo->beginTransaction(); // Speed up your inserts
+  /**
+  $data = [
+    'name' => $name,
+    'surname' => $surname,
+    'sex' => $sex,
+    ];
+  $sql = "INSERT INTO users (name, surname, sex) VALUES (:name, :surname, :sex)";
+  $stmt= $pdo->prepare($sql);
+  $stmt->execute($data); 
+  */
+
+  $ph = ":".implode(',:', array_values($cols));
+	$sql = "INSERT INTO ". $table ." (" . implode( ',', array_values( $cols ) ) . ") VALUES " . "(" . $ph .")";
+
+	echo "<pre>";
+   echo $sql;
+  echo "</pre>";
+	$statement = $pdo->prepare($sql);
+	try {
+		$statement->execute($data);
+		$src = $statement->rowCount(); //
+		return ($statement) ? $src : false;
+	} catch(PDOException $e) {
+		return $e->getMessage();
+	}
+	$pdo->commit();
+}
 
 
 
@@ -211,40 +286,6 @@ function insert2($pdo, $table, $cols, $data) {
 
 <?php
 
-/*
-
-CREATE TABLE `dokum` (
-	`id` INT(11) NOT NULL AUTO_INCREMENT,
-	`dok_turu` VARCHAR(20) NULL DEFAULT NULL COLLATE 'utf8_turkish_ci',
-	`dok_krm_tur_kodu` VARCHAR(10) NULL DEFAULT NULL COLLATE 'utf8_turkish_ci',
-	`dok_alan_id` SMALLINT(6) NULL DEFAULT NULL,
-	`dok_sinif_kodu` VARCHAR(10) NULL DEFAULT NULL COLLATE 'utf8_turkish_ci',
-	`dok_adi` VARCHAR(250) NOT NULL DEFAULT '\'İsimsiz Belge\'' COLLATE 'utf8_turkish_ci',
-	`dok_dosya` VARCHAR(500) NOT NULL COLLATE 'utf8_turkish_ci',
-	`dok_img` VARCHAR(300) NULL DEFAULT '\'images/icon/dok-default.png\'' COLLATE 'utf8_turkish_ci',
-	`dok_kodu` VARCHAR(100) NULL DEFAULT NULL COLLATE 'utf8_turkish_ci',
-	`dok_sayi` VARCHAR(20) NULL DEFAULT NULL COLLATE 'utf8_turkish_ci',
-	`dok_tarih` DATE NULL DEFAULT NULL,
-	`dok_onaysayi` VARCHAR(30) NULL DEFAULT NULL COLLATE 'utf8_turkish_ci',
-	`dok_onaytarih` DATE NULL DEFAULT NULL,
-	`dok_alan` VARCHAR(200) NULL DEFAULT NULL COLLATE 'utf8_turkish_ci',
-	`yolx` VARCHAR(500) NULL DEFAULT NULL COLLATE 'utf8_turkish_ci',
-	`indirme` MEDIUMINT(9) NULL DEFAULT NULL,
-	`durum` VARCHAR(1) NOT NULL DEFAULT 'y' COLLATE 'utf8_turkish_ci',
-	`kayit` DATETIME NULL DEFAULT current_timestamp(),
-	`guncelleme` DATETIME NULL DEFAULT NULL,
-	`notlar` TEXT NULL DEFAULT NULL COLLATE 'utf8_turkish_ci',
-	PRIMARY KEY (`id`) USING BTREE,
-	INDEX `dok_alan_id` (`dok_alan_id`) USING BTREE,
-	INDEX `dok_krm_tur_kodu` (`dok_krm_tur_kodu`) USING BTREE,
-	INDEX `dok_sinif_kodu` (`dok_sinif_kodu`) USING BTREE,
-	INDEX `dok_turu` (`dok_turu`) USING BTREE
-)
-COLLATE='utf8_turkish_ci'
-ENGINE=InnoDB
-;
-
-*/
 if($xfile) {
 
 	$msc = microtime(true);
@@ -259,9 +300,11 @@ if($xfile) {
 			}
 			$rows[] = array_combine( $header_values, $r );
 		}
-
+    
 		echo "<hr><pre>Code:<br>";
-		// var_dump($rows);
+    var_dump($header_values);
+    echo "<hr>";
+		var_dump($rows);
 		echo "</pre>";
 		
 		// tablo 
@@ -270,9 +313,12 @@ if($xfile) {
 		$rowc = 0;
 		// insert 
 		# $dbi = insert2($dbconn, $dbtable, $header_values, $rows);
-		$ins = insert2($dbconn, $dbtable, $header_values, $rows);
+		//$ins = inserts($dbconn, $dbtable, $header_values, $rows);
+		$ins = pdo_insert($dbconn, $dbtable, $rows);
+		print_r($ins);
 		
 		$rowsCount = count($rows); // satir say
+		
 		foreach ($rows as $row) {
 			//++ $ins = insert($dbconn, $dbtable, $row);
 			//--$ins = insert3($dbconn, $dbtable, $header_values, $row);
@@ -311,13 +357,6 @@ if ( $xlsx = SimpleXLSX::parse($xfile) ) {
 }
 ************************************************************************************** */
 
-
-?>
-
-<?php
-/*
-
-*/
 
 ?>
 </body>

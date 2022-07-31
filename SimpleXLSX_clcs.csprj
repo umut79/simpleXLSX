@@ -1,0 +1,189 @@
+
+<codestructure version="1.11.1">
+<phptree>
+<treenode node="4NKv9Q9x;PHP:PHP Word;V:\www\simpleXLSX\simplexlsxgen\kurumListeAl.php;f20;14;28;14;;;;vpos;;v;;a;;r&quot;4NKv9Q9x&quot;;;d-1,-1;;b0,0;;m0;;e0;;i0;;o;;k;;l">
+</treenode>
+<treenode node="DBhost;PHP:PHP Word;V:\www\simpleXLSX\simplexlsxgen\kurumListeAl.php;f10;5;16;5;;;;vpos;;v;;a;;r&quot;localhost&quot;;;d-1,-1;;b0,0;;m0;;e0;;i0;;o;;k;;l">
+</treenode>
+<treenode node="DBname;PHP:PHP Word;V:\www\simpleXLSX\simplexlsxgen\kurumListeAl.php;f10;8;16;8;;;;vpos;;v;;a;;r&quot;a0okulu&quot;;;d-1,-1;;b0,0;;m0;;e0;;i0;;o;;k;;l">
+</treenode>
+<treenode node="DBpass;PHP:PHP Word;V:\www\simpleXLSX\simplexlsxgen\kurumListeAl.php;f10;7;16;7;;;;vpos;;v;;a;;r&quot;4200&quot;;;d-1,-1;;b0,0;;m0;;e0;;i0;;o;;k;;l">
+</treenode>
+<treenode node="DBuser;PHP:PHP Word;V:\www\simpleXLSX\simplexlsxgen\kurumListeAl.php;f10;6;16;6;;;;vpos;;v;;a;;r&quot;root&quot;;;d-1,-1;;b0,0;;m0;;e0;;i0;;o;;k;;l">
+</treenode>
+<treenode node="fg163_u411z1Z4wa;PHP:PHP Word;V:\www\simpleXLSX\simplexlsxgen\kurumListeAl.php;f20;13;36;13;;;;vpos;;v;;a;;r&quot;fg163_u411z1Z4wa&quot;;;d-1,-1;;b0,0;;m0;;e0;;i0;;o;;k;;l">
+</treenode>
+<treenode node="fg163u411z1z419u5;PHP:PHP Word;V:\www\simpleXLSX\simplexlsxgen\kurumListeAl.php;f20;15;37;15;;;;vpos;;v;;a;;r&quot;fg163u411z1z419u5&quot;;;d-1,-1;;b0,0;;m0;;e0;;i0;;o;;k;;l">
+</treenode>
+<treenode node="localhost;PHP:PHP Word;V:\www\simpleXLSX\simplexlsxgen\kurumListeAl.php;f20;12;29;12;;;;vpos;;v;;a;;r&quot;localhost&quot;;;d-1,-1;;b0,0;;m0;;e0;;i0;;o;;k;;l">
+</treenode>
+<treenode node="src/SimpleXLSX.php;PHP:PHP Include;V:\www\simpleXLSX\simplexlsx\up2.php;f14;4;32;4;;V:\www\simpleXLSX\simplexlsx\up.php;f14;4;32;4;;V:\www\simpleXLSX\simplexlsx\basic.php;f14;1;32;1;;V:\www\simpleXLSX\simplexlsx\up4.php;f14;4;32;4;;V:\www\simpleXLSX\simplexlsx\up3.php;f14;4;32;4;;;;vpos;;v;;a;;r&#10;&lt;b&gt;Description&lt;/b&gt;&#10;    Dosya yuklemesi olmadan excel dosyalarını oku;;d-1,-1;;b0,0;;m0;;e0;;i0;;o;;k;;l">
+</treenode>
+<treenode node="SimpleXLSX;PHP:Class Name;V:\www\simpleXLSX\simplexlsx\src\SimpleXLSX.php;f0;72;1;1106;;;;vpos;;v;;a;;r&#10;&lt;b&gt;Definition&lt;/b&gt;&#10;    class SimpleXLSX&#10;&#10;&lt;b&gt;Description&lt;/b&gt;&#10;    Examples&#10;Example 1:&#10;if ( $xlsx = SimpleXLSX::parse(&apos;book.xlsx&apos;) ) {&#10;print_r( $xlsx-&gt;rows() );s&#10;} else {&#10;echo SimpleXLSX::parseError();s&#10;}&#10;Example 2: html table&#10;if ( $xlsx = SimpleXLSX::parse(&apos;book.xlsx&apos;) ) {&#10;echo $xlsx-&gt;toHTML();s&#10;} else {&#10;echo SimpleXLSX::parseError();s&#10;}&#10;Example 3: rowsEx&#10;$xlsx = SimpleXLSX::parse(&apos;book.xlsx&apos;);s&#10;print_r( $xlsx-&gt;rowsEx() );s&#10;Example 4: select worksheet&#10;$xlsx = SimpleXLSX::parse(&apos;book.xlsx&apos;);s&#10;print_r( $xlsx-&gt;rows(1) );s // second worksheet&#10;Example 5: IDs and worksheet names&#10;$xlsx = SimpleXLSX::parse(&apos;book.xlsx&apos;);s&#10;print_r( $xlsx-&gt;sheetNames() );s // array( 0 =&gt; &apos;Sheet 1&apos;, 1 =&gt; &apos;Catalog&apos; );s&#10;Example 6: get sheet name by index&#10;$xlsx = SimpleXLSX::parse(&apos;book.xlsx&apos;);s&#10;echo &apos;Sheet Name 2 = &apos;.$xlsx-&gt;sheetName(1);s&#10;Example 7: getCell (very slow)&#10;echo $xlsx-&gt;getCell(1,&apos;D12&apos;);s // reads D12 cell from second sheet&#10;Example 8: read data&#10;if ( $xlsx = SimpleXLSX::parseData( file_get_contents(&apos;http://www.example.com/example.xlsx&apos;) ) ) {&#10;$dim = $xlsx-&gt;dimension(1);s&#10;$num_cols = $dim[0];s&#10;$num_rows = $dim[1];s&#10;echo $xlsx-&gt;sheetName(1).&apos;:&apos;.$num_cols.&apos;x&apos;.$num_rows;s&#10;} else {&#10;echo SimpleXLSX::parseError();s&#10;}&#10;Example 9: old style&#10;$xlsx = new SimpleXLSX(&apos;book.xlsx&apos;);s&#10;if ( $xlsx-&gt;success() ) {&#10;print_r( $xlsx-&gt;rows() );s&#10;} else {&#10;echo &apos;xlsx error: &apos;.$xlsx-&gt;error();s&#10;};;d17,72;;b0,0;;m0;;e0;;i0;;o;;k;;l">
+<treenode node="__construct;PHP:Function Name;V:\www\simpleXLSX\simplexlsx\src\SimpleXLSX.php;f8;181;2;195;;;;vpos;;v;;a;;r;;d81,181;;b1,0;;m0;;e0;;i0;;o;;k;;lfilename;;pis_data;;pdebug;;p;;x;;x;;x">
+</treenode>
+<treenode node="_getTarget;PHP:Function Name;V:\www\simpleXLSX\simplexlsx\src\SimpleXLSX.php;f11;1075;2;1095;;;;vpos;;v;;a;;r;;d49,1075;;b2,0;;m0;;e0;;i0;;o;;k;;lbase;;ptarget;;p;;x;;x">
+</treenode>
+<treenode node="_num2name;PHP:Function Name;V:\www\simpleXLSX\simplexlsx\src\SimpleXLSX.php;f11;1096;2;1104;;;;vpos;;v;;a;;r;;d36,1096;;b2,0;;m0;;e0;;i0;;o;;k;;lnum;;p;;x">
+</treenode>
+<treenode node="_parse;PHP:Function Name;V:\www\simpleXLSX\simplexlsx\src\SimpleXLSX.php;f11;421;2;526;;;;vpos;;v;;a;;r;;d29,421;;b2,0;;m0;;e0;;i0;;o;;k;;l">
+</treenode>
+<treenode node="_parseRichText;PHP:Function Name;V:\www\simpleXLSX\simplexlsx\src\SimpleXLSX.php;f11;1041;2;1053;;;;vpos;;v;;a;;r;;d49,1041;;b2,0;;m0;;e0;;i0;;o;;k;;lis;;p;;x">
+</treenode>
+<treenode node="_strlen;PHP:Function Name;V:\www\simpleXLSX\simplexlsx\src\SimpleXLSX.php;f11;1055;2;1057;;;;vpos;;v;;a;;r;;d36,1055;;b2,0;;m0;;e0;;i0;;o;;k;;lstr;;p;;x">
+</treenode>
+<treenode node="_strpos;PHP:Function Name;V:\www\simpleXLSX\simplexlsx\src\SimpleXLSX.php;f11;1059;2;1061;;;;vpos;;v;;a;;r;;d63,1059;;b2,0;;m0;;e0;;i0;;o;;k;;lhaystack;;pneedle;;poffset;;p;;x;;x;;x">
+</treenode>
+<treenode node="_strtoupper;PHP:Function Name;V:\www\simpleXLSX\simplexlsx\src\SimpleXLSX.php;f11;1067;2;1069;;;;vpos;;v;;a;;r;;d40,1067;;b2,0;;m0;;e0;;i0;;o;;k;;lstr;;p;;x">
+</treenode>
+<treenode node="_substr;PHP:Function Name;V:\www\simpleXLSX\simplexlsx\src\SimpleXLSX.php;f11;1071;2;1073;;;;vpos;;v;;a;;r;;d60,1071;;b2,0;;m0;;e0;;i0;;o;;k;;lstr;;pstart;;plength;;p;;x;;x;;x">
+</treenode>
+<treenode node="_unzip;PHP:Function Name;V:\www\simpleXLSX\simplexlsx\src\SimpleXLSX.php;f11;232;2;401;;;;vpos;;v;;a;;r;;d58,232;;b2,0;;m0;;e0;;i0;;o;;k;;lfilename;;pis_data;;p;;x;;x">
+</treenode>
+<treenode node="dimension;PHP:Function Name;V:\www\simpleXLSX\simplexlsx\src\SimpleXLSX.php;f8;813;2;855;;;;vpos;;v;;aarray;;r&#10;&lt;b&gt;Definition&lt;/b&gt;&#10;    dimension( $worksheetIndex = 0 )&#10;&#10;&lt;b&gt;Description&lt;/b&gt;&#10;    returns [numCols,numRows] of worksheet&#10;&#10;&lt;b&gt;Parameters:&lt;/b&gt;&#10;    int &lt;b&gt;$worksheetIndex&lt;/b&gt;;;d50,813;;b1,0;;m0;;e0;;i0;;o;;k;;l $worksheetIndex;;p;;x">
+</treenode>
+<treenode node="entryExists;PHP:Function Name;V:\www\simpleXLSX\simplexlsx\src\SimpleXLSX.php;f8;589;2;599;;;;vpos;;v;;a;;r;;d38,589;;b1,0;;m0;;e0;;i0;;o;;k;;lname;;p;;x">
+</treenode>
+<treenode node="errno;PHP:Function Name;V:\www\simpleXLSX\simplexlsx\src\SimpleXLSX.php;f8;417;2;419;;;;vpos;;v;;a;;r;;d25,417;;b1,0;;m0;;e0;;i0;;o;;k;;l">
+</treenode>
+<treenode node="error;PHP:Function Name;V:\www\simpleXLSX\simplexlsx\src\SimpleXLSX.php;f8;405;2;415;;;;vpos;;v;;a;;r;;d51,405;;b1,0;;m0;;e0;;i0;;o;;k;;lnum;;pstr;;p;;x;;x">
+</treenode>
+<treenode node="getCell;PHP:Function Name;V:\www\simpleXLSX\simplexlsx\src\SimpleXLSX.php;f8;984;2;1000;;;;vpos;;v;;amixed;;r&#10;&lt;b&gt;Definition&lt;/b&gt;&#10;    getCell( $worksheetIndex = 0, $cell = &apos;A1&apos; )&#10;&#10;&lt;b&gt;Description&lt;/b&gt;&#10;    Returns cell value&#10;VERY SLOW! Use -&gt;rows() or -&gt;rowsEx()&#10;&#10;&lt;b&gt;Parameters:&lt;/b&gt;&#10;    int &lt;b&gt;$worksheetIndex&lt;/b&gt;&#10;    string|array &lt;b&gt;$cell&lt;/b&gt;: ref or coords, D12 or [3,12]&#10;&#10;&lt;b&gt;Return:&lt;/b&gt;&#10;   Returns NULL if not found;;d62,984;;b1,0;;m0;;e0;;i0;;o;;k;;l $worksheetIndex;;p $cell;;p;;x;;x">
+</treenode>
+<treenode node="getEntryData;PHP:Function Name;V:\www\simpleXLSX\simplexlsx\src\SimpleXLSX.php;f8;575;2;587;;;;vpos;;v;;a;;r;;d39,575;;b1,0;;m0;;e0;;i0;;o;;k;;lname;;p;;x">
+</treenode>
+<treenode node="getEntryXML;PHP:Function Name;V:\www\simpleXLSX\simplexlsx\src\SimpleXLSX.php;f8;532;2;573;;;;vpos;;v;;a;;r;;d38,532;;b1,0;;m0;;e0;;i0;;o;;k;;lname;;p;;x">
+</treenode>
+<treenode node="getIndex;PHP:Function Name;V:\www\simpleXLSX\simplexlsx\src\SimpleXLSX.php;f8;857;2;877;;;;vpos;;v;;a;;r;;d42,857;;b1,0;;m0;;e0;;i0;;o;;k;;lcell;;p;;x">
+</treenode>
+<treenode node="getPackage;PHP:Function Name;V:\www\simpleXLSX\simplexlsx\src\SimpleXLSX.php;f8;1034;2;1036;;;;vpos;;v;;a;;r;;d30,1034;;b1,0;;m0;;e0;;i0;;o;;k;;l">
+</treenode>
+<treenode node="getStyles;PHP:Function Name;V:\www\simpleXLSX\simplexlsx\src\SimpleXLSX.php;f8;1030;2;1032;;;;vpos;;v;;a;;r;;d29,1030;;b1,0;;m0;;e0;;i0;;o;;k;;l">
+</treenode>
+<treenode node="href;PHP:Function Name;V:\www\simpleXLSX\simplexlsx\src\SimpleXLSX.php;f8;1002;2;1005;;;;vpos;;v;;a;;r;;d48,1002;;b1,0;;m0;;e0;;i0;;o;;k;;lworksheetIndex;;pcell;;p;;x;;x">
+</treenode>
+<treenode node="parse;PHP:Function Name;V:\www\simpleXLSX\simplexlsx\src\SimpleXLSX.php;f15;205;2;218;;;;vpos;;v;;a;;r;;d77,205;;b1,5;;m0;;e0;;i0;;o;;k;;lfilename;;pis_data;;pdebug;;p;;x;;x;;x">
+</treenode>
+<treenode node="parseData;PHP:Function Name;V:\www\simpleXLSX\simplexlsx\src\SimpleXLSX.php;f15;201;2;203;;;;vpos;;v;;a;;r;;d59,201;;b1,5;;m0;;e0;;i0;;o;;k;;ldata;;pdebug;;p;;x;;x">
+</treenode>
+<treenode node="parseErrno;PHP:Function Name;V:\www\simpleXLSX\simplexlsx\src\SimpleXLSX.php;f15;226;2;230;;;;vpos;;v;;a;;r;;d51,226;;b1,5;;m0;;e0;;i0;;o;;k;;lset;;p;;x">
+</treenode>
+<treenode node="parseError;PHP:Function Name;V:\www\simpleXLSX\simplexlsx\src\SimpleXLSX.php;f15;220;2;224;;;;vpos;;v;;a;;r;;d51,220;;b1,5;;m0;;e0;;i0;;o;;k;;lset;;p;;x">
+</treenode>
+<treenode node="parseFile;PHP:Function Name;V:\www\simpleXLSX\simplexlsx\src\SimpleXLSX.php;f15;197;2;199;;;;vpos;;v;;a;;r;;d63,197;;b1,5;;m0;;e0;;i0;;o;;k;;lfilename;;pdebug;;p;;x;;x">
+</treenode>
+<treenode node="rows;PHP:Function Name;V:\www\simpleXLSX\simplexlsx\src\SimpleXLSX.php;f8;605;2;647;;;;vpos;;v;;a;;r;;d45,605;;b1,0;;m0;;e0;;i0;;o;;k;;lworksheetIndex;;p;;x">
+</treenode>
+<treenode node="rowsEx;PHP:Function Name;V:\www\simpleXLSX\simplexlsx\src\SimpleXLSX.php;f8;649;2;742;;;;vpos;;v;;a;;r;;d47,649;;b1,0;;m0;;e0;;i0;;o;;k;;lworksheetIndex;;p;;x">
+</treenode>
+<treenode node="setDateTimeFormat;PHP:Function Name;V:\www\simpleXLSX\simplexlsx\src\SimpleXLSX.php;f8;1038;2;1040;;;;vpos;;v;;a;;r;;d45,1038;;b1,0;;m0;;e0;;i0;;o;;k;;lvalue;;p;;x">
+</treenode>
+<treenode node="sheetName;PHP:Function Name;V:\www\simpleXLSX\simplexlsx\src\SimpleXLSX.php;f8;1015;2;1021;;;;vpos;;v;;a;;r;;d46,1015;;b1,0;;m0;;e0;;i0;;o;;k;;lworksheetIndex;;p;;x">
+</treenode>
+<treenode node="sheetNames;PHP:Function Name;V:\www\simpleXLSX\simplexlsx\src\SimpleXLSX.php;f8;1023;2;1026;;;;vpos;;v;;a;;r;;d30,1023;;b1,0;;m0;;e0;;i0;;o;;k;;l">
+</treenode>
+<treenode node="sheets;PHP:Function Name;V:\www\simpleXLSX\simplexlsx\src\SimpleXLSX.php;f8;1007;2;1009;;;;vpos;;v;;a;;r;;d26,1007;;b1,0;;m0;;e0;;i0;;o;;k;;l">
+</treenode>
+<treenode node="sheetsCount;PHP:Function Name;V:\www\simpleXLSX\simplexlsx\src\SimpleXLSX.php;f8;1011;2;1013;;;;vpos;;v;;a;;r;;d31,1011;;b1,0;;m0;;e0;;i0;;o;;k;;l">
+</treenode>
+<treenode node="success;PHP:Function Name;V:\www\simpleXLSX\simplexlsx\src\SimpleXLSX.php;f8;601;2;603;;;;vpos;;v;;a;;r;;d27,601;;b1,0;;m0;;e0;;i0;;o;;k;;l">
+</treenode>
+<treenode node="toHTML;PHP:Function Name;V:\www\simpleXLSX\simplexlsx\src\SimpleXLSX.php;f8;744;2;756;;;;vpos;;v;;a;;r;;d47,744;;b1,0;;m0;;e0;;i0;;o;;k;;lworksheetIndex;;p;;x">
+</treenode>
+<treenode node="unixstamp;PHP:Function Name;V:\www\simpleXLSX\simplexlsx\src\SimpleXLSX.php;f8;961;2;973;;;;vpos;;v;;a;;r;;d45,961;;b1,0;;m0;;e0;;i0;;o;;k;;lexcelDateTime;;p;;x">
+</treenode>
+<treenode node="value;PHP:Function Name;V:\www\simpleXLSX\simplexlsx\src\SimpleXLSX.php;f8;879;2;959;;;;vpos;;v;;a;;r;;d32,879;;b1,0;;m0;;e0;;i0;;o;;k;;lcell;;p;;x">
+</treenode>
+<treenode node="worksheet;PHP:Function Name;V:\www\simpleXLSX\simplexlsx\src\SimpleXLSX.php;f8;758;2;804;;;;vpos;;v;;a;;r;;d50,758;;b1,0;;m0;;e0;;i0;;o;;k;;lworksheetIndex;;p;;x">
+</treenode>
+</treenode>
+<treenode node="SimpleXLSXGen;PHP:Class Name;V:\www\simpleXLSX\simplexlsxgen\src\SimpleXLSXGen.php;f0;7;1;663;;;;vpos;;v;;a;;r&#10;&lt;b&gt;Definition&lt;/b&gt;&#10;    class SimpleXLSXGen&#10;&#10;&lt;b&gt;Description&lt;/b&gt;&#10;    Class SimpleXLSXGen&#10;Export data to MS Excel. PHP XLSX generator&#10;Author: sergey.shuchkin&#10;&lt;b&gt;gmail&lt;/b&gt;: .com;;d20,7;;b0,0;;m0;;e0;;i0;;o;;k;;l">
+<treenode node="A_CENTER;PHP:PHP Word;V:\www\simpleXLSX\simplexlsxgen\src\SimpleXLSXGen.php;f6;34;15;34;;;;vpos;;v;;a;;r3;;d-1,-1;;b1,5;;m0;;e0;;i0;;o;;k;;l">
+</treenode>
+<treenode node="A_DEFAULT;PHP:PHP Word;V:\www\simpleXLSX\simplexlsxgen\src\SimpleXLSXGen.php;f6;31;16;31;;;;vpos;;v;;a;;r0;;d-1,-1;;b1,5;;m0;;e0;;i0;;o;;k;;l">
+</treenode>
+<treenode node="A_LEFT;PHP:PHP Word;V:\www\simpleXLSX\simplexlsxgen\src\SimpleXLSXGen.php;f6;32;13;32;;;;vpos;;v;;a;;r1;;d-1,-1;;b1,5;;m0;;e0;;i0;;o;;k;;l">
+</treenode>
+<treenode node="A_RIGHT;PHP:PHP Word;V:\www\simpleXLSX\simplexlsxgen\src\SimpleXLSXGen.php;f6;33;14;33;;;;vpos;;v;;a;;r2;;d-1,-1;;b1,5;;m0;;e0;;i0;;o;;k;;l">
+</treenode>
+<treenode node="F_BOLD;PHP:PHP Word;V:\www\simpleXLSX\simplexlsxgen\src\SimpleXLSXGen.php;f6;27;13;27;;;;vpos;;v;;a;;r2;;d-1,-1;;b1,5;;m0;;e0;;i0;;o;;k;;l">
+</treenode>
+<treenode node="F_HYPERLINK;PHP:PHP Word;V:\www\simpleXLSX\simplexlsxgen\src\SimpleXLSXGen.php;f6;26;18;26;;;;vpos;;v;;a;;r1;;d-1,-1;;b1,5;;m0;;e0;;i0;;o;;k;;l">
+</treenode>
+<treenode node="F_ITALIC;PHP:PHP Word;V:\www\simpleXLSX\simplexlsxgen\src\SimpleXLSXGen.php;f6;28;15;28;;;;vpos;;v;;a;;r4;;d-1,-1;;b1,5;;m0;;e0;;i0;;o;;k;;l">
+</treenode>
+<treenode node="F_NORMAL;PHP:PHP Word;V:\www\simpleXLSX\simplexlsxgen\src\SimpleXLSXGen.php;f6;25;15;25;;;;vpos;;v;;a;;r0;;d-1,-1;;b1,5;;m0;;e0;;i0;;o;;k;;l">
+</treenode>
+<treenode node="F_STRIKE;PHP:PHP Word;V:\www\simpleXLSX\simplexlsxgen\src\SimpleXLSXGen.php;f6;30;15;30;;;;vpos;;v;;a;;r16;;d-1,-1;;b1,5;;m0;;e0;;i0;;o;;k;;l">
+</treenode>
+<treenode node="F_UNDERLINE;PHP:PHP Word;V:\www\simpleXLSX\simplexlsxgen\src\SimpleXLSXGen.php;f6;29;18;29;;;;vpos;;v;;a;;r8;;d-1,-1;;b1,5;;m0;;e0;;i0;;o;;k;;l">
+</treenode>
+<treenode node="N_DATE;PHP:PHP Word;V:\www\simpleXLSX\simplexlsxgen\src\SimpleXLSXGen.php;f6;22;13;22;;;;vpos;;v;;a;;r14;;d-1,-1;;b1,5;;m0;;e0;;i0;;o;;k;;l">
+</treenode>
+<treenode node="N_DATETIME;PHP:PHP Word;V:\www\simpleXLSX\simplexlsxgen\src\SimpleXLSXGen.php;f6;24;17;24;;;;vpos;;v;;a;;r22;;d-1,-1;;b1,5;;m0;;e0;;i0;;o;;k;;l">
+</treenode>
+<treenode node="N_DEC;PHP:PHP Word;V:\www\simpleXLSX\simplexlsxgen\src\SimpleXLSXGen.php;f6;19;12;19;;;;vpos;;v;;a;;r2;;d-1,-1;;b1,5;;m0;;e0;;i0;;o;;k;;l">
+</treenode>
+<treenode node="N_INT;PHP:PHP Word;V:\www\simpleXLSX\simplexlsxgen\src\SimpleXLSXGen.php;f6;18;12;18;;;;vpos;;v;;a;;r1;;d-1,-1;;b1,5;;m0;;e0;;i0;;o;;k;;l">
+</treenode>
+<treenode node="N_NORMAL;PHP:PHP Word;V:\www\simpleXLSX\simplexlsxgen\src\SimpleXLSXGen.php;f6;17;15;17;;;;vpos;;v;;a;;r0;;d-1,-1;;b0,5;;m0;;e0;;i0;;o;;k;;l">
+</treenode>
+<treenode node="N_PERCENT_INT;PHP:PHP Word;V:\www\simpleXLSX\simplexlsxgen\src\SimpleXLSXGen.php;f6;20;20;20;;;;vpos;;v;;a;;r9;;d-1,-1;;b1,5;;m0;;e0;;i0;;o;;k;;l">
+</treenode>
+<treenode node="N_PRECENT_DEC;PHP:PHP Word;V:\www\simpleXLSX\simplexlsxgen\src\SimpleXLSXGen.php;f6;21;20;21;;;;vpos;;v;;a;;r10;;d-1,-1;;b1,5;;m0;;e0;;i0;;o;;k;;l">
+</treenode>
+<treenode node="N_TIME;PHP:PHP Word;V:\www\simpleXLSX\simplexlsxgen\src\SimpleXLSXGen.php;f6;23;13;23;;;;vpos;;v;;a;;r20;;d-1,-1;;b1,5;;m0;;e0;;i0;;o;;k;;l">
+</treenode>
+<treenode node="__construct;PHP:Function Name;V:\www\simpleXLSX\simplexlsxgen\src\SimpleXLSXGen.php;f8;37;2;110;;;;vpos;;v;;a;;r;;d31,37;;b1,0;;m0;;e0;;i0;;o;;k;;l">
+</treenode>
+<treenode node="__toString;PHP:Function Name;V:\www\simpleXLSX\simplexlsxgen\src\SimpleXLSXGen.php;f8;146;2;160;;;;vpos;;v;;a;;r;;d30,146;;b1,0;;m0;;e0;;i0;;o;;k;;l">
+</treenode>
+<treenode node="_sheetToXML;PHP:Function Name;V:\www\simpleXLSX\simplexlsxgen\src\SimpleXLSXGen.php;f11;418;2;614;;;;vpos;;v;;a;;r;;d49,418;;b2,0;;m0;;e0;;i0;;o;;k;;lidx;;ptemplate;;p;;x;;x">
+</treenode>
+<treenode node="_write;PHP:Function Name;V:\www\simpleXLSX\simplexlsxgen\src\SimpleXLSXGen.php;f11;208;2;337;;;;vpos;;v;;a;;r;;d34,208;;b2,0;;m0;;e0;;i0;;o;;k;;lfh;;p;;x">
+</treenode>
+<treenode node="_writeEntry;PHP:Function Name;V:\www\simpleXLSX\simplexlsxgen\src\SimpleXLSXGen.php;f11;339;2;416;;;;vpos;;v;;a;;r;;d65,339;;b2,0;;m0;;e0;;i0;;o;;k;;lfh;;pcdrec;;pcfilename;;pdata;;p;;x;;x;;x;;x">
+</treenode>
+<treenode node="addSheet;PHP:Function Name;V:\www\simpleXLSX\simplexlsxgen\src\SimpleXLSXGen.php;f8;116;2;144;;;;vpos;;v;;a;;r;;d55,116;;b1,0;;m0;;e0;;i0;;o;;k;;lrows;;pname;;p;;x;;x">
+</treenode>
+<treenode node="date2excel;PHP:Function Name;V:\www\simpleXLSX\simplexlsxgen\src\SimpleXLSXGen.php;f8;626;2;651;;;;vpos;;v;;a;;r;;d83,626;;b1,0;;m0;;e0;;i0;;o;;k;;lyear;;pmonth;;pday;;phours;;pminutes;;pseconds;;p;;x;;x;;x;;x;;x;;x">
+</treenode>
+<treenode node="download;PHP:Function Name;V:\www\simpleXLSX\simplexlsxgen\src\SimpleXLSXGen.php;f8;176;2;178;;;;vpos;;v;;a;;r;;d28,176;;b1,0;;m0;;e0;;i0;;o;;k;;l">
+</treenode>
+<treenode node="downloadAs;PHP:Function Name;V:\www\simpleXLSX\simplexlsxgen\src\SimpleXLSXGen.php;f8;180;2;206;;;;vpos;;v;;a;;r;;d41,180;;b1,0;;m0;;e0;;i0;;o;;k;;lfilename;;p;;x">
+</treenode>
+<treenode node="esc;PHP:Function Name;V:\www\simpleXLSX\simplexlsxgen\src\SimpleXLSXGen.php;f8;660;2;662;;;;vpos;;v;;a;;r;;d29,660;;b1,0;;m0;;e0;;i0;;o;;k;;lstr;;p;;x">
+</treenode>
+<treenode node="fromArray;PHP:Function Name;V:\www\simpleXLSX\simplexlsxgen\src\SimpleXLSXGen.php;f15;111;2;114;;;;vpos;;v;;a;;r;;d68,111;;b1,5;;m0;;e0;;i0;;o;;k;;lrows;;psheetName;;p;;x;;x">
+</treenode>
+<treenode node="num2name;PHP:Function Name;V:\www\simpleXLSX\simplexlsxgen\src\SimpleXLSXGen.php;f8;616;2;624;;;;vpos;;v;;a;;r;;d32,616;;b1,0;;m0;;e0;;i0;;o;;k;;lnum;;p;;x">
+</treenode>
+<treenode node="saveAs;PHP:Function Name;V:\www\simpleXLSX\simplexlsxgen\src\SimpleXLSXGen.php;f8;162;2;174;;;;vpos;;v;;a;;r;;d37,162;;b1,0;;m0;;e0;;i0;;o;;k;;lfilename;;p;;x">
+</treenode>
+<treenode node="setDefaultFont;PHP:Function Name;V:\www\simpleXLSX\simplexlsxgen\src\SimpleXLSXGen.php;f8;652;2;655;;;;vpos;;v;;a;;r;;d41,652;;b1,0;;m0;;e0;;i0;;o;;k;;lname;;p;;x">
+</treenode>
+<treenode node="setDefaultFontSize;PHP:Function Name;V:\www\simpleXLSX\simplexlsxgen\src\SimpleXLSXGen.php;f8;656;2;659;;;;vpos;;v;;a;;r;;d45,656;;b1,0;;m0;;e0;;i0;;o;;k;;lsize;;p;;x">
+</treenode>
+</treenode>
+<treenode node="find_date;PHP:Function Name;V:\www\simpleXLSX\simplexlsx\up4.php;f0;23;1;52;;;;vpos;;v;;a;;r;;d30,23;;b0,0;;m0;;e0;;i0;;o;;k;;lstring;;p;;x">
+</treenode>
+<treenode node="getSql;PHP:Function Name;V:\www\simpleXLSX\simplexlsxgen\kurumListeAl.php;f0;20;1;47;;;;vpos;;v;;a;;r;;d22,20;;b0,0;;m0;;e0;;i0;;o;;k;;lsql;;p;;x">
+</treenode>
+<treenode node="insert;PHP:Function Name;V:\www\simpleXLSX\simplexlsx\up2.php;f0;95;1;113;;;;vpos;;v;;a;;r;;d35,64;;b0,0;;m0;;e0;;i0;;o;;k;;ldb;;ptable;;pdata;;p;;x;;x;;x">
+</treenode>
+<treenode node="insert2;PHP:Function Name;V:\www\simpleXLSX\simplexlsx\up4.php;f0;222;1;250;;;;vpos;;v;;a;;r;;d45,222;;b0,0;;m0;;e0;;i0;;o;;k;;lpdo;;ptable;;pcols;;pdata;;p;;x;;x;;x;;x">
+</treenode>
+<treenode node="insert2_0;PHP:Function Name;V:\www\simpleXLSX\simplexlsx\up4.php;f0;197;1;220;;;;vpos;;v;;a;;r;;d47,197;;b0,0;;m0;;e0;;i0;;o;;k;;lpdo;;ptable;;pcols;;pdata;;p;;x;;x;;x;;x">
+</treenode>
+<treenode node="insert3;PHP:Function Name;V:\www\simpleXLSX\simplexlsx\up4.php;f0;137;1;192;;;;vpos;;v;;a;;r;;d45,137;;b0,0;;m0;;e0;;i0;;o;;k;;lpdo;;ptable;;pcols;;pdata;;p;;x;;x;;x;;x">
+</treenode>
+<treenode node="inserts;PHP:Function Name;V:\www\simpleXLSX\simplexlsx\up4.php;f0;83;1;133;;;;vpos;;v;;a;;r&#10;&lt;b&gt;Definition&lt;/b&gt;&#10;    inserts($db, $table, $rows, $data)&#10;&#10;&#10;&lt;b&gt;Parameters:&lt;/b&gt;&#10;     &lt;b&gt;$db&lt;/b&gt;&#10;     &lt;b&gt;$table&lt;/b&gt;&#10;     &lt;b&gt;$rows&lt;/b&gt;&#10;     &lt;b&gt;$data&lt;/b&gt;;;d43,83;;b0,0;;m0;;e0;;i0;;o;;k;;l $db;;p $table;;p $rows;;p $data;;p;;x;;x;;x;;x">
+</treenode>
+<treenode node="placeholder;PHP:Function Name;V:\www\simpleXLSX\simplexlsx\up4.php;f0;54;1;62;;V:\www\simpleXLSX\simplexlsx\up3.php;f0;16;1;25;;;;vpos;;v;;a;;r;;d60,16;;b0,0;;m0;;e0;;i0;;o;;k;;ltext;;pcount;;pseparator;;p;;x;;x;;x">
+</treenode>
+</phptree>
+<jstree>
+</jstree>
+<pythontree>
+</pythontree>
+</codestructure>

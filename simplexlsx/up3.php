@@ -94,7 +94,8 @@ if ( $xlsx = SimpleXLSX::parse($xfile)) {
 	$statement = $pdo->prepare($sql);
 	try {
 		$statement->execute($insertvalues);
-		echo ($statement) ? "success":"error";
+		$rc = $statement->rowCount();
+		echo ($statement) ? "success ".$rc :"error";
 	} catch(PDOException $e) {
 		echo $e->getMessage();
 	}
