@@ -1,4 +1,5 @@
 <?php
+ini_set('memory_limit', '999M');
 /**
 *  Dosya yuklemesi olmadan excel dosyalarını oku
 **/
@@ -129,47 +130,49 @@ function inserts($pdo, $table, $rows, $data, $crt=FALSE){
 		
 		// echo $bug;
 		// exec
-			  $rc=0;
-			  foreach($data as $d){
-				  
-					foreach($d as $key => &$val) {
-						if(empty($val) || $val=="") {
-							$val = "";
-							$datatype = "PDO::PARAM_NULL";
-						} else {
-							$datatype = "PDO::PARAM_STR";
-							if (is_int($val)) {
-								$datatype = "PDO::PARAM_INT";
-								$val = $val;
-							} elseif (empty($val)) {
-								$val = "";
-								$datatype = "PDO::PARAM_NULL";
-							} elseif ($val instanceof DateTime) {
-								$val = $val->format('Y-m-d H:i:s');
-								$datatype = "PDO::PARAM_STR";
-							} else {
-								$datatype = "PDO::PARAM_STR";
-							}
-						}
-						
-						echo $key." = ".$val." -> datatype: ".$datatype."<br>";
-						// --
-						//$stmt->bindValue(":".$key, $val, $datatype);
-						$stmt->bindValue(":".$key, $val, PDO::PARAM_STR);
-						$rc++;
+		$rc=0;
+		foreach($data as $d){
+			$datatype = "PDO::PARAM_STR";
+			foreach($d as $key => &$val) {
+				/*
+				if(empty($val) || $val=="") {
+					$val = "";
+					$datatype = "PDO::PARAM_NULL";
+				} else {
+					$datatype = "PDO::PARAM_STR";
+					if (is_int($val)) {
+						$datatype = "PDO::PARAM_INT";
+						$val = $val;
+					} elseif (empty($val)) {
+						$val = "";
+						$datatype = "PDO::PARAM_NULL";
+					} elseif ($val instanceof DateTime) {
+						$val = $val->format('Y-m-d H:i:s');
+						$datatype = "PDO::PARAM_STR";
+					} else {
+						$datatype = "PDO::PARAM_STR";
 					}
 				}
-		try {
+				*/
+				
+				// echo $key." = ".$val." -> datatype: ".$datatype."<br>";
+				// --
+				//$stmt->bindValue(":".$key, $val, $datatype);
+				$stmt->bindValue(":".$key, $val, PDO::PARAM_STR);
+				$rc++;
+			}
 			$stmt->execute();
-			//$stmt->commit();
+		}
+		try {
+			
 			$ic = $stmt->rowCount();
-			echo $rc ." -- ". $ic;
+			// echo $rc ." -- ". $ic;
 			return $rc;
 			// return $bug;
 		} catch(PDOException $e) {
 			//$stmt->rollback();
 			throw $e;
-			return $e->getMessage() . "<hr>## Q: ". $bug;
+			return $e->getMessage() . "<hr>## Q: ". $sql . " - ". $bug;
 		}
 		$pdo->commit();
 	} else {
@@ -233,9 +236,6 @@ function insert3($pdo, $table, $cols, $data) {
 		
 	$pdo->commit();
 }
-
-
-
 
 function insert2_0($pdo, $table, $cols, $data) {
 	$pdo->beginTransaction(); // Speed up your inserts
@@ -340,8 +340,8 @@ if($xfile) {
 		COLLATE='utf8_general_ci'
 		ENGINE=MyISAM;
 		ALTER TABLE `". $sName ."`
-		ADD COLUMN `id` INT(8) NOT NULL AUTO_INCREMENT,
-		ADD PRIMARY KEY (`id`);";
+		ADD COLUMN `id` INT(8) NOT NULL PRIMARY KEY AUTO_INCREMENT FIRST;";
+		// ADD PRIMARY KEY (`id`);";
 		
 		echo $crt; // create
 		
