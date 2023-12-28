@@ -72,6 +72,15 @@ $sth = $db->prepare("INSERT INTO table ( " . implode(', ',array_keys($insData)) 
 $res = $sth->execute($prep);
 */
 
+function trFix($tr1) {
+	$tr1 = trim($tr1);
+	$turkce=array("ş","Ş","ı","ü","Ü","ö","Ö","ç","Ç","ş","Ş","ı","ğ","Ğ","İ","ö","Ö","Ç","ç","ü","Ü");
+	$duzgun=array("s","S","i","u","U","o","O","c","C","s","S","i","g","G","I","o","O","C","c","u","U");
+	$tr1=str_replace($turkce,$duzgun,$tr1);
+	$tr1 = preg_replace("@[^a-z0-9\-_şıüğçİŞĞÜÇ]+@i","_",$tr1);
+	return $tr1;
+}
+
 function escape_mysql_identifier($field){
     return "`".str_replace("`", "``", $field)."`";
 }
@@ -89,210 +98,92 @@ function pdo_insert($pdo, $table, $data) {
 
 
 /**
-* 
-* @param $db
-* @param $table
-* @param $rows
-* @param $data
-* 
-* @return
+$batch_size = 1000;
+for( $i=0,$c=count($players); $i<$c; $i+=$batch_size ) {
+    $db->beginTransaction();
+    try {
+        for( $k=$i; $k<$c && $k<$i+$batch_size; $k++ ) {
+            $player = $players[$k];
+            $sql->execute([
+                ":name" => $player->name,
+                ":level" => $player->level,
+                ":vocation" => $player->vocation,
+                ":world" => $player->world,
+                ":time" => $player->time,
+                ":online" => $player->online
+            ]);
+        }
+    } catch( PDOException $e ) {
+        $db->rollBack();
+        // at this point you would want to implement some sort of error handling
+        // or potentially re-throw the exception to be handled at a higher layer
+        break;
+    }
+    $db->commit();
+}
 */
 
-function inserts($pdo, $table, $rows, $data, $crt=FALSE){
+function crtTable($pdo, $cq) {
 	$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+	if(!empty($cq)) { // create table
+			try {	
+				$stm = $pdo->prepare($cq);
+				$stm->execute();
+				return 1;
+			} catch( PDOException $e ) {
+				echo $e->getMessage();
+			}
+		}
+}
+
+function inserts($pdo, $table, $cols, $data, $crt=FALSE){
 	
-	/*
-	if(!empty($crt)) {
-	$pdo->beginTransaction();
-	$stmt_1 = $pdo->prepare($crt);
-	$stmt_1->execute();
-	$stmt_1->commit();
-	}*/
+	if(!empty($crt)) { 
+		$createTable = crtTable($pdo, $crt); 
+	} // create table
 	
-	
-	if(!empty($data) && is_array($data)){
+	if((!empty($data) && is_array($data)) && (!empty($crt) && $createTable===1 )){
+		$datatype = "PDO::PARAM_STR";
+		$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
 		$columns = '';
 		$values  = '';
 		$i = 0;
 
-		$columnString = implode(', ', array_values($rows));
-		$valueString = ":".implode(',:', array_values($rows));
+		$columnString = implode(', ', array_values($cols)); // col names
+		$valueString = ":".implode(',:', array_values($cols)); // col names for pdo
 		
-		$pdo->beginTransaction();
-		if(!empty($crt)) {
-			$stmt = $pdo->prepare($crt);
-			$stmt->execute();
-			//$stmt->commit();
-		}
+		// insert 
 		$sql = "INSERT INTO ".$table." (".$columnString.") VALUES (" . $valueString .")";
-		$bug = $sql;
 		$stmt = $pdo->prepare($sql);
 		
-		// echo $bug;
-		// exec
-		$rc=0;
-		foreach($data as $d){
-			$datatype = "PDO::PARAM_STR";
-			foreach($d as $key => &$val) {
-				/*
-				if(empty($val) || $val=="") {
-					$val = "";
-					$datatype = "PDO::PARAM_NULL";
-				} else {
-					$datatype = "PDO::PARAM_STR";
-					if (is_int($val)) {
-						$datatype = "PDO::PARAM_INT";
-						$val = $val;
-					} elseif (empty($val)) {
-						$val = "";
-						$datatype = "PDO::PARAM_NULL";
-					} elseif ($val instanceof DateTime) {
-						$val = $val->format('Y-m-d H:i:s');
-						$datatype = "PDO::PARAM_STR";
-					} else {
-						$datatype = "PDO::PARAM_STR";
+		$batch_size = 1000;
+		$qt=0;
+		for( $i=0,$c=count($data); $i<$c; $i+=$batch_size ) {	
+			$pdo->beginTransaction();
+			try {
+				for( $k=$i; $k<$c && $k<$i+$batch_size; $k++ ) {
+					
+					foreach($data[$k] as $key => &$val) {
+						$keyFixed = trFix($key); // tr düzelt
+						$stmt->bindValue(":".$keyFixed, $val, PDO::PARAM_STR);
 					}
+					$stmt->execute();
+					$qt++;
 				}
-				*/
 				
-				// echo $key." = ".$val." -> datatype: ".$datatype."<br>";
-				// --
-				//$stmt->bindValue(":".$key, $val, $datatype);
-				$stmt->bindValue(":".$key, $val, PDO::PARAM_STR);
-				$rc++;
+			} catch( PDOException $e ) {
+				echo "Error on insert!!!<br>";
+				echo $e->getMessage();
+				$pdo->rollBack();
+				break;
 			}
-			$stmt->execute();
+			$pdo->commit();
 		}
-		try {
-			
-			$ic = $stmt->rowCount();
-			// echo $rc ." -- ". $ic;
-			return $rc;
-			// return $bug;
-		} catch(PDOException $e) {
-			//$stmt->rollback();
-			throw $e;
-			return $e->getMessage() . "<hr>## Q: ". $sql . " - ". $bug;
-		}
-		$pdo->commit();
-	} else {
-		return false;
-	}
-}
-
-
-// insert v.3 ????????????????????
-function insert3($pdo, $table, $cols, $data) {
-	// print_r($data);
-	$pdo->beginTransaction(); // Speed up your inserts	
-		
-		foreach($data as $d){
-			$columns = '';
-			$values  = '';
-			$i = 0;
-			
-			$columnString = implode(', ', array_keys($d));
-			$valueString = ":".implode(', :', array_keys($d));
-			
-			$sql = "INSERT INTO ".$table." (".$columnString.") VALUES (".$valueString.")";
-				$query = $pdo->prepare($sql);
-				echo $sql."<br>";
-			
-		}
-			foreach($d as $key=>$val) {
-				
-				echo ":".$key."->". $val ." / ";
-				
-				if (is_int($val)) {
-					$datatype = PDO::PARAM_INT;			
-				} elseif (is_null($val)) {
-					$val = "NULL";
-					$datatype = PDO::PARAM_NULL;
-				} elseif (empty($val)) {
-					$val = "NULL";
-					$datatype = PDO::PARAM_NULL;
-				} elseif ($val instanceof DateTime) {
-					$val = $val->format('Y-m-d H:i:s');
-					$datatype = PDO::PARAM_STR;
-				} else {
-					$val = filter_var($val, FILTER_SANITIZE_STRING);
-					$datatype = PDO::PARAM_STR;
-				}
-				// --
-				$query->bindValue(":".$key, $val, $datatype);
-				echo '<b> query->bindValue(:'.$key.', '.$val.', '.$datatype.') </b><br>';
-			}
+		echo "Inserted ". $qt ."<br>";
+	} // if $data
 	
-		
-		try {
-			$query->execute();
-			// $src = $insert?$query->lastInsertId():false;
-			// $src = $insert->rowCount(); //
-			return ($query) ? true : false;
-		} catch(PDOException $e) {
-			return $e->getMessage();
-		}
-		
-		
-	$pdo->commit();
-}
-
-function insert2_0($pdo, $table, $cols, $data) {
-	$pdo->beginTransaction(); // Speed up your inserts
-	$insertvalues = array();
-	$questionmarks[] = '(' . placeholder( '?', sizeof($cols)) . ')';
-	foreach ($data as $d) {
-		
-		$insertvalues = array_merge( $insertvalues, array_values($d) );
-	}
-	$sql = "INSERT INTO ". $table ." (" . implode( ',', array_values( $cols ) ) . ") VALUES " . implode( ',', $questionmarks);
-  ## $sql = "INSERT INTO ". $table ." (" . implode( ',', array_values( $cols ) ) . ") VALUES " . array_values( $data ) .";";
-	echo "<pre>";
-   echo $sql;
-	 var_dump($insertvalues);
-  echo "</pre>";
-	$statement = $pdo->prepare($sql);
-	try {
-		$statement->execute($data);
-		$src = $statement->rowCount(); //
-		return ($statement) ? $src : false;
-	} catch(PDOException $e) {
-		return $e->getMessage();
-	}
-	$pdo->commit();
-}
-
-function insert2($pdo, $table, $cols, $data) {
-	$pdo->beginTransaction(); // Speed up your inserts
-  /**
-  $data = [
-    'name' => $name,
-    'surname' => $surname,
-    'sex' => $sex,
-    ];
-  $sql = "INSERT INTO users (name, surname, sex) VALUES (:name, :surname, :sex)";
-  $stmt= $pdo->prepare($sql);
-  $stmt->execute($data); 
-  */
-
-  $ph = ":".implode(',:', array_values($cols));
-	$sql = "INSERT INTO ". $table ." (" . implode( ',', array_values( $cols ) ) . ") VALUES " . "(" . $ph .")";
-
-	echo "<pre>";
-   echo $sql;
-  echo "</pre>";
-	$statement = $pdo->prepare($sql);
-	try {
-		$statement->execute($data);
-		$src = $statement->rowCount(); //
-		return ($statement) ? $src : false;
-	} catch(PDOException $e) {
-		return $e->getMessage();
-	}
-	$pdo->commit();
-}
-
-
+} // func 
 
 
 ?>
@@ -300,9 +191,13 @@ function insert2($pdo, $table, $cols, $data) {
 <html>
 <head>
 <meta charset="utf-8">
-<title>xlsx2sql insert v.1</title>
+<title>xlsx2sql insert v.1.1</title>
 </head>
 <body>
+<p>Dosya yüklemeye gerek olmadan excel dosyasını okuma ve sql tablosuna aktarma.</p>
+<p>+ Tablo otomatik oluşturma<br>
++ Büyük tablo aktarma
+</p>
 <form enctype="multipart/form-data" method="post">
 <input name="file" type="file" />
 <input name="sub" type="submit" value="Yükle" />
@@ -310,9 +205,10 @@ function insert2($pdo, $table, $cols, $data) {
 
 <?php
 
-if($xfile) {
+if(!empty($xfile)) {
 
 	$msc = microtime(true);
+	echo "<hr><pre>Code:<br>";
 
 	if ( $xlsx = SimpleXLSX::parse($xfile)) {
 		// Produce array keys from the array values of 1st array element
@@ -325,70 +221,54 @@ if($xfile) {
 			$rows[] = array_combine( $header_values, $r );
 		}
     
-		echo "<hr><pre>Code:<br>";
-		$sName = $dbtable = $xlsx->sheetName(0);
-		echo $sName ."\n";
-		var_dump($header_values);
+		
+		$tblName = $xlsx->sheetName(0);
+		$tblName = trFix($tblName);
+		echo $tblName ."\n";
+		// var_dump($header_values);
 		
 		// Create Table 
-		$crt = "CREATE TABLE IF NOT EXISTS `". $sName ."` ( ";
+		$crt = "CREATE TABLE IF NOT EXISTS `". $tblName ."` ( ";
 			foreach($header_values as $hv) {
-			$crtRow[] = "`".$hv."` TEXT NULL DEFAULT NULL ";
+				$col_names[] = trFix($hv);
+				$colName = trFix($hv);
+				$crtCols[] = "`".$colName."` TEXT NULL DEFAULT NULL ";
 			}
-		$crt .= implode(", \n", $crtRow);
+		$crt .= implode(", \n", $crtCols);
 		$crt .= ")
-		COLLATE='utf8_general_ci'
-		ENGINE=MyISAM;
-		ALTER TABLE `". $sName ."`
-		ADD COLUMN `id` INT(8) NOT NULL PRIMARY KEY AUTO_INCREMENT FIRST;";
-		// ADD PRIMARY KEY (`id`);";
-		
-		echo $crt; // create
-		
+		COLLATE='utf8_general_ci' ENGINE=MyISAM;
+		ALTER TABLE `". $tblName ."` ADD COLUMN `id` INT(8) NOT NULL PRIMARY KEY AUTO_INCREMENT FIRST;";
+		// echo $crt; // create sql 
 		// --------------------------------------------
 		// Insert 
+		$showTable = false;
+		$showTbl = '<table border="1" cellpadding="3" style="border-collapse: collapse; max-width:90%">';
+		$showTbl .= '<tr style="background-color: #efefef;"><th>'. implode('</th><th>', array_values($header_values) ) .'</th></tr>';
 		
-		echo "<hr>";
-		// var_dump($rows);
-		/*
-		foreach($rows as $rk=>$rv) {
-			
-		}
-		*/
-		echo "</pre>";
-		
-		// tablo 
-		$showTbl = '<table border="1" cellpadding="3" style="border-collapse: collapse;">';
-		$showTbl .= '<tr style="background-color: #efefef;"><th>#</th><th>'. implode('</th><th>', array_values($header_values) ) .'</th></tr>';
-		$rowc = 0;
+		echo "Okunan: " . count($rows) . " satır.";
 		// insert 
-		# $dbi = insert2($dbconn, $dbtable, $header_values, $rows);
-		 $ins = inserts($dbconn, $dbtable, $header_values, $rows, $crt);
-		// $ins = pdo_insert($dbconn, $dbtable, $rows);
+		$ins = inserts($dbconn, $tblName, $col_names, $rows, $crt);
 		print_r($ins);
-		
-		$rowsCount = count($rows); // satir say
+		// print_r($col_names);
 		
 		foreach ($rows as $row) {
-			//++ $ins = insert($dbconn, $dbtable, $row);
-			//--$ins = insert3($dbconn, $dbtable, $header_values, $row);
-			#$rid = $ins ? $ins : "x";
-			#$rowc = $ins ? $rowc+1 : $rowc;
-			//$rowc++;
-			$showTbl .= '<tr><td>'. $rowc .' / Q: '. $ins .'</td><td>'. implode('</td><td>', $row ) .'</td></tr>';
+			$showTbl .= '<tr>'; 
+			$showTbl .= '<td>'. implode('</td><td>', $row ) .'</td>';
+			$showTbl .= '</tr>';
 		}
-		$showTbl .= "</table><br>Okunan: " . $rowsCount . " satır.";	
+		$showTbl .= "</table>";	
 		
 		
-		if($rowc) {
+		if($showTable) {
 			echo $showTbl;
-			echo "Yazılan: ". $rowc ." satır.";
 		}
 	}
 
 
 	$msc = microtime(true)-$msc;
-	echo "<hr>Sorgu süresi: ". $msc . " s / ". ($msc * 1000) . " ms"; // in millseconds
+	echo "<hr>İşlem süresi: ". number_format($msc, 2, ",", ".") ." sn"; // in seconds
+	
+	echo "</pre>";
 
 }
 
