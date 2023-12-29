@@ -1,5 +1,7 @@
 <?php
-ini_set('memory_limit', '999M');
+ini_set('upload_max_filesize', '999M');
+ini_set('memory_limit', '2G');
+ini_set('max_execution_time', 600);
 /**
 *  Dosya yuklemesi olmadan excel dosyalarını oku
 **/
@@ -14,7 +16,7 @@ $dbtable = "dokum";
 
 if(isset($_FILES["file"])){
     if ($_FILES["file"]["error"] > 0){
-        echo "Error: " . $_FILES["file"]["error"] . "<br />";
+        echo "File Error: " . $_FILES["file"]["error"] . "<br />";
     }else{
         //$var = file_get_contents($_FILES["file"]["tmp_name"]);
         //echo $var;  //test
