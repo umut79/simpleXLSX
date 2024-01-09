@@ -17,7 +17,7 @@
 + Tablo otomatik oluşturma<br>
 + Büyük tablo aktarma
 </p>
-<form enctype="multipart/form-data" id="fform" method="post" data-sendto="up4.2.app.php" data-returntype="html">
+<form enctype="multipart/form-data" id="fform" method="post" data-send2="up4.2.app.php" data-restype="html">
 <input name="file" type="file" id="xlsx" />
 <button name="sub" id="submitBtn" type="submit">Yükle</button>
 </form>
@@ -28,23 +28,23 @@
 const doc_input = document.getElementById('xlsx')
 
 doc_input.addEventListener('change', (event) => {
-const target = event.target
+    const target = event.target;
+    const maxmb = 20;
     if (target.files && target.files[0]) {
-
-    const maxAllowedSize = 3 * 1024 * 1024;
-    if (target.files[0].size > maxAllowedSize) {
-        alert('3 mb küçük dosya olmalı!');
-        target.value = ''
+        const maxAllowedSize = maxmb * 1024 * 1024;
+        if (target.files[0].size > maxAllowedSize) {
+            alert('Dosya boyutu en çok '+ maxmb + ' MB olabilir!');
+            target.value = ''
+        }
     }
-}
 })
 
 $(document).ready(function(e){
     // Submit form data via Ajax
     $("#fform").on('submit', function(e){
         e.preventDefault();
-		var sendTo = $(this).data("sendto");
-		var dType = $(this).data("returntype");
+		var sendTo = $(this).data("send2");
+		var dType = $(this).data("resptype");
         $.ajax({
             type: 'POST',
             url: sendTo, // 'up4.2.app.php'
@@ -60,14 +60,6 @@ $(document).ready(function(e){
             },
             success: function(response){
                 $('.statusMsg').html('');
-				/*
-                if(response.status == 1){
-                    $('#ffrom')[0].reset();
-                    $('.statusMsg').html('<p class="alert alert-success">'+response.message+'</p>');
-                }else{
-                    $('.statusMsg').html('<p class="alert alert-danger">'+response.message+'</p>');
-                }
-				*/
 				if(response){ // html response
                     $("#fform input[type=file]").val('');
                     $('.statusMsg').html(response);
