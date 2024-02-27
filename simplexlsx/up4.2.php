@@ -18,6 +18,9 @@
 + Büyük tablo aktarma
 </p>
 <form enctype="multipart/form-data" id="fform" method="post" data-send2="up4.2.app.php" data-restype="html">
+<label for="db">Veri tabanı</label>
+<input name="db" type="text" id="db">
+<label for="xlsx">Dosya</label>
 <input name="file" type="file" id="xlsx" />
 <button name="sub" id="submitBtn" type="submit">Yükle</button>
 </form>
@@ -57,6 +60,7 @@ $(document).ready(function(e){
 				$('#submitBtn').text("Bekleyiniz...");
                 $('#submitBtn').attr("disabled","disabled");
                 $('#ffrom').css("opacity",".3");
+				$('.statusMsg').html('İşleniyor... Bekleyiniz...');
             },
             success: function(response){
                 $('.statusMsg').html('');

@@ -7,12 +7,16 @@ ini_set('max_execution_time', 600);
 **/
 require_once "src/SimpleXLSX.php";
 
+if(isset($_REQUEST["file"]) && isset($_REQUEST["db"])){
+	$dbname = $_REQUEST["db"];
+}
+
 $dbhost = "localhost";
-$dbname = "simple_xlsx";
+// $dbname = "simple_xlsx";
 $dbuser = "root";
 $dbpass = "4200";
 $dbconn = new PDO("mysql:host=$dbhost;dbname=$dbname;charset=utf8",$dbuser,$dbpass);
-$dbtable = "dokum";
+//$dbtable = "dokum";
 
 if(isset($_FILES["file"])){
     if ($_FILES["file"]["error"] > 0){
@@ -191,6 +195,7 @@ if(!empty($xfile)) {
 
 	$msc = microtime(true);
 	echo "<hr><pre>Code:<br>";
+	echo "DB: ". $dbname ."<br>";
 
 	if ( $xlsx = SimpleXLSX::parse($xfile)) {
 		// Produce array keys from the array values of 1st array element
