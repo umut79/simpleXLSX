@@ -8,7 +8,7 @@ ini_set('max_execution_time', 600);
 require_once "src/SimpleXLSX.php";
 
 if(isset($_FILES["file"]) && isset($_POST["db"])){
-	$dbname = $_REQUEST["db"];
+	$dbname = $_POST["db"];
 }
 
 $dbhost = "localhost";

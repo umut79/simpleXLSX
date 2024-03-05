@@ -1,0 +1,1 @@
+UPDATE edk24_donatim SET malid='1354' WHERE `atolyeid` = 1103 and malid = 4626;
