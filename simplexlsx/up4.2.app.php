@@ -172,6 +172,7 @@ function inserts($pdo, $table, $cols, $data, $crt=FALSE){
 					
 					foreach($data[$k] as $key => &$val) {
 						$keyFixed = trFix($key); // tr düzelt
+						$val = trim($val);
 						$stmt->bindValue(":".$keyFixed, $val, PDO::PARAM_STR);
 					}
 					$stmt->execute();
