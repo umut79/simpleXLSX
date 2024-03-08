@@ -25,6 +25,7 @@ if(isset($_FILES["file"])){
         //$var = file_get_contents($_FILES["file"]["tmp_name"]);
         //echo $var;  //test
         $xfile = $_FILES["file"]["tmp_name"];
+		$xfileName = $_FILES["file"]["name"];
     }
 }
 
@@ -196,7 +197,8 @@ if(!empty($xfile)) {
 
 	$msc = microtime(true);
 	echo "<hr><pre>Code:<br>";
-	echo "DB: ". $dbname ."<br>";
+	echo "Dosya: ". $xfileName ."<br>";
+	echo "Veri Tabanı: ". $dbname ."<br>";
 
 	if ( $xlsx = SimpleXLSX::parse($xfile)) {
 		// Produce array keys from the array values of 1st array element
@@ -211,8 +213,8 @@ if(!empty($xfile)) {
     
 		
 		$tblName = $xlsx->sheetName(0);
-		$tblName = trFix($tblName);
-		echo $tblName ."\n";
+		$tblName = trFix(trim($tblName));
+		echo "Tablo: ". $tblName ."\n";
 		// var_dump($header_values);
 		
 		// Create Table 
