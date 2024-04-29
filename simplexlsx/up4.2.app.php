@@ -181,14 +181,14 @@ function inserts($pdo, $table, $cols, $data, $crt=FALSE){
 				}
 				
 			} catch( PDOException $e ) {
-				echo "Error on insert!!!<br>";
+				echo "<p>ERROR!</p>";
 				echo $e->getMessage();
 				$pdo->rollBack();
 				break;
 			}
 			$pdo->commit();
 		}
-		echo "Inserted ". $qt ."<br>";
+		echo "<p>Eklenen satır: ". $qt ."</p>";
 	} // if $data
 	
 } // func 
@@ -220,8 +220,8 @@ if(!empty($xfile)) {
 		// Create Table 
 		$crt = "CREATE TABLE IF NOT EXISTS `". $tblName ."` ( ";
 			foreach($header_values as $hv) {
-				$col_names[] = trFix($hv);
-				$colName = trFix($hv);
+				$col_names[] = trFix(trim($hv));
+				$colName = trFix(trim($hv));
 				$crtCols[] = "`".$colName."` TEXT NULL DEFAULT NULL ";
 			}
 		$crt .= implode(", \n", $crtCols);
