@@ -32,7 +32,7 @@ const doc_input = document.getElementById('xlsx')
 
 doc_input.addEventListener('change', (event) => {
     const target = event.target;
-    const maxmb = 20;
+    const maxmb = 40;
     if (target.files && target.files[0]) {
         const maxAllowedSize = maxmb * 1024 * 1024;
         if (target.files[0].size > maxAllowedSize) {

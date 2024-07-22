@@ -187,6 +187,7 @@ function inserts($pdo, $table, $cols, $data, $crt=FALSE){
 				break;
 			}
 			$pdo->commit();
+			// echo "<p>Eklenen satır: ". $qt ."</p>";
 		}
 		echo "<p>Eklenen satır: ". $qt ."</p>";
 	} // if $data
