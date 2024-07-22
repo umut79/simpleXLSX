@@ -19,42 +19,45 @@
 </head>
 <body>
 <div class="container">
-<h4>Dosya yüklemeden Excel dosyasını oku ve SQL tablosuna aktar</h4>
-<p class="text-muted">
-+ Ajax submit <br>
-+ Tablo otomatik oluşturma<br>
-+ Büyük tablo aktarma (Max: 20 MB)
-</p>
-<form enctype="multipart/form-data" id="fform" method="post" data-send2="up4.2.app.php" data-restype="html"  style="width:500px">
-<div class="row mb-1">
-	<div class="col-4">
-		<label for="db">Veri tabanı</label>
-	</div>
-	<div class="col-8">
-		<input name="db" type="text" id="db"  class="form-control">
-	</div>
-</div>
-<div class="row mb-1">
-	<div class="col-4">
-		<label for="xlsx">Dosya</label>
-	</div>
-	<div class="col-8">
-		<input name="file" type="file" id="xlsx" class="form-control" />
-	</div>
-</div>
-<div class="row mb-1">
-	<div class="col-12 text-right">
-		<button name="sub" id="submitBtn" type="submit" class="btn btn-success" disabled>Yükle</button>
-	</div>
-</div>
-<div class="row mb-1">
-	<div class="col-4">
-		<span id="fsize"></span>
 	<div>
-</div>
-</form>
-<div class="w-100" class="statusMsg"></div>
+		<h4>Dosya yüklemeden Excel dosyasını oku ve SQL tablosuna aktar</h4>
+		<p class="text-muted">
+		+ Ajax submit <br>
+		+ Tablo otomatik oluşturma<br>
+		+ Büyük tablo aktarma (Max: 20 MB)
+		</p>
+	</div>
+	<form enctype="multipart/form-data" id="fform" method="post" data-send2="up4.2.app.php" data-restype="html" class="container"  style="width:500px">
+		<div class="row mb-1">
+			<div class="col-4">
+				<label for="db">Veri tabanı</label>
+			</div>
+			<div class="col-8">
+				<input name="db" type="text" id="db"  class="form-control">
+			</div>
+		</div>
+		<div class="row mb-1">
+			<div class="col-4">
+				<label for="xlsx">Dosya</label>
+			</div>
+			<div class="col-8">
+				<input name="file" type="file" id="xlsx" class="form-control" />
+			</div>
+		</div>
+		<div class="row mb-1">
+			<div class="col-12 text-right">
+				<button name="sub" id="submitBtn" type="submit" class="btn btn-success">Başlat</button>
+			</div>
+		</div>
+	</form>
 
+	<div class="row mb-1">
+		<div class="col-12">
+			<span id="fsize"></span>
+		</div>
+	</div>
+
+	<div class="font-monospace" id="statusMsg"></div>
 
 </div>
 
@@ -79,26 +82,37 @@ doc_input.addEventListener('change', (event) => {
             target.value = ''
         } else {
 			document.getElementById("fsize").innerHTML = 'Dosya: <b>'+ target.files[0].name +'</b><br>Boyut: <b>' +formatBytes(target.files[0].size, 1)+'</b>';
-			if(!document.getElementById("db").val) {
-				/*const msg = "Veritabanı seçiniz!";
-				const emsg = document.createElement("div");
-				emsg.setAttribute("class", "d-block text.danger p-1");
-				emsg.innerHTML = msg;
-				document.getElementById("db").appendChild(emsg);*/
-			} else {
-				document.getElementById("submitBtn").removeAttribute("disabled");
-			}
 		}
     }
 })
 
 $(document).ready(function(e){
+	var frm = $('#fform');
+	var smit = $('#submitBtn');
+	var resp = $("#statusMsg");
+	var xls = $('#xlsx');
+	var dbn = $('#db');
+	// Validate form
+	$(frm).on('change', function(){
+		if(!$(dbn).val()) {
+			dbn.addClass("is-invalid");
+			smit.attr("disabled","disabled");
+		} else if(!$(xls).val()) {
+			xls.addClass("is-invalid");
+			smit.attr("disabled","disabled");
+		} else {
+			dbn.removeClass("is-invalid");
+			xls.removeClass("is-invalid");
+			smit.removeAttr("disabled");
+		}
+		
+	});
     // Submit form data via Ajax
-    $("#fform").on('submit', function(e){
+    $(frm).on('submit', function(e){
         e.preventDefault();
 		var sendTo = $(this).data("send2");
 		var dType = $(this).data("resptype");
-		if($("#db").val()) {
+		if($(dbn).val() && $(xls).val()) {
 			$.ajax({
 				type: 'POST',
 				url: sendTo, // 'up4.2.app.php'
@@ -108,26 +122,21 @@ $(document).ready(function(e){
 				cache: false,
 				processData:false,
 				beforeSend: function(){
-					$('#submitBtn').text("Bekleyiniz...");
-					$('#submitBtn').attr("disabled","disabled");
-					$('#ffrom').css("opacity",".3");
-					$('.statusMsg').html('İşleniyor... Bekleyiniz...');
+					smit.text("Bekleyiniz...");
+					smit.attr("disabled","disabled");
+					frm.css("opacity",".3");
+					resp.html('İşleniyor... Bekleyiniz...');
 				},
 				success: function(response){
-					$('.statusMsg').html('');
+					resp.html('');
 					if(response){ // html response
-						$("#fform input[type=file]").val('');
-						$('.statusMsg').html(response);
+						$(frm).find("input[type=file]").val('');
+						resp.html(response);
 					}
-					$('#ffrom').css("opacity","1");
-					$('#submitBtn').text("Yükle");
-					$("#submitBtn").removeAttr("disabled");
+					frm.css("opacity","1");
+					smit.text("Başlat").removeAttr("disabled");
 				}
 			});
-		} else {
-			// ??????????????
-			$("#db").append("<p class='d-block text.danger p-1'>Veritabanı seçiniz!</p>");
-			//alert("Veritabanı seçiniz!");
 		}
     });
 });
