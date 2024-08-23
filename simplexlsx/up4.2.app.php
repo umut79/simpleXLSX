@@ -1,7 +1,7 @@
 <?php
 ini_set('upload_max_filesize', '999M');
-ini_set('memory_limit', '2G');
-ini_set('max_execution_time', 600);
+ini_set('memory_limit', '4096M');
+ini_set('max_execution_time', 900);
 /**
 *  Dosya yuklemesi olmadan excel dosyalarını oku
 **/
