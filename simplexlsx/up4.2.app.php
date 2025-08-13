@@ -228,6 +228,7 @@ if(!empty($xfile)) {
 		$crt .= implode(", \n", $crtCols);
 		$crt .= ")
 		COLLATE='utf8_general_ci' ENGINE=MyISAM;
+		ALTER TABLE `". $tblName ."` COMMENT='Oluşturulma: ". date('d.m.Y H.i') ." | ". $xfileName ." dosyasından oluşturuldu.';
 		ALTER TABLE `". $tblName ."` ADD COLUMN `id` INT(8) NOT NULL PRIMARY KEY AUTO_INCREMENT FIRST;";
 		// echo $crt; // create sql 
 		// --------------------------------------------
